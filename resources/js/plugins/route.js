@@ -9,6 +9,7 @@ import ResetPassword from '../components/auth/reset-password';
 import EmailVerification from '../components/dashboard/email-verification';
 import Profile from '../components/dashboard/profile';
 import Home from '../components/web/home';
+import Chat from '../components/web/chat';
 import HelloTable from '../components/dashboard/hello/hello-table';
 import AuthenticatedGuard from "../shared/guards/authenticated-guard";
 import GuestGuard from "../shared/guards/guest-guard";
@@ -48,6 +49,7 @@ const routes = [
     component: WebLayout,
     children: [
       { path: "home", component: Home },
+      { path: "chat", component: Chat, beforeEnter: [AuthenticatedGuard] },
     ]
   },
   {

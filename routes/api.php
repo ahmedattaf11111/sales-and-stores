@@ -34,3 +34,9 @@ Route::prefix("hellos")->group(function () {
     Route::delete("{id}", "HelloController@delete");
     Route::get("", "HelloController@index");
 });
+
+Route::prefix("chat")->group(function () {
+    Route::get("rooms", "ChatController@getRooms");
+    Route::get("messages/{roomId}", "ChatController@getMessages");
+    Route::post("", "ChatController@newMesage");
+});

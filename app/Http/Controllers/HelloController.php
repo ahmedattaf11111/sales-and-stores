@@ -12,7 +12,7 @@ class HelloController extends Controller
     private $helloRepository;
     public function __construct(HelloRepository $helloRepository)
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
         $this->helloRepository = $helloRepository;
     }
 
