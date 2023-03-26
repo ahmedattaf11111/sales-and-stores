@@ -25,11 +25,7 @@
               <div class="row">
                 <div class="col-lg-4 mb-3">
                   <div class="image">
-                    <img
-                      v-if="previewImage"
-                      class="border-bottom"
-                      :src="previewImage"
-                    />
+                    <img v-if="previewImage" class="border-bottom" :src="previewImage" />
                     <img
                       v-else
                       class="border-bottom"
@@ -59,9 +55,7 @@
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label for="exampleInputEmail1">{{
-                          $t("TITLE_AR")
-                        }}</label>
+                        <label for="exampleInputEmail1">{{ $t("TITLE_AR") }}</label>
                         <input
                           type="text"
                           class="form-control"
@@ -71,10 +65,7 @@
                           }"
                         />
                         <div class="invalid-feedback">
-                          <div
-                            v-for="error in v$.title_ar.$errors"
-                            :key="error"
-                          >
+                          <div v-for="error in v$.title_ar.$errors" :key="error">
                             {{ $t("TITLE_AR") + " " + $t(error.$validator) }}
                           </div>
                           <div v-if="!v$.title_ar.$invalid && titleArExist">
@@ -95,10 +86,7 @@
                           }"
                         />
                         <div class="invalid-feedback">
-                          <div
-                            v-for="error in v$.title_en.$errors"
-                            :key="error"
-                          >
+                          <div v-for="error in v$.title_en.$errors" :key="error">
                             {{ $t("TITLE_EN") + " " + $t(error.$validator) }}
                           </div>
                           <div v-if="!v$.title_en.$invalid && titleEnExist">
@@ -109,11 +97,7 @@
                     </div>
                     <hr class="mt-3" />
                     <!--list-->
-                    <div
-                      class="list"
-                      v-for="(hello, index) in list"
-                      :key="index"
-                    >
+                    <div class="list" v-for="(hello, index) in list" :key="index">
                       <div class="hello row">
                         <div class="col-lg-12 d-flex justify-content-end">
                           <button
@@ -135,20 +119,16 @@
                               :class="{
                                 'is-invalid':
                                   hello.title_ar_dirty &&
-                                  v$.list.$each.$response.$errors[index]
-                                    .title_ar.length,
+                                  v$.list.$each.$response.$errors[index].title_ar.length,
                               }"
                             />
                             <div class="invalid-feedback">
                               <div
-                                v-for="error in v$.list.$each.$response.$errors[
-                                  index
-                                ].title_ar"
+                                v-for="error in v$.list.$each.$response.$errors[index]
+                                  .title_ar"
                                 :key="error"
                               >
-                                {{
-                                  $t("TITLE_AR") + " " + $t(error.$validator)
-                                }}
+                                {{ $t("TITLE_AR") + " " + $t(error.$validator) }}
                               </div>
                             </div>
                           </div>
@@ -164,20 +144,16 @@
                               :class="{
                                 'is-invalid':
                                   hello.title_en_dirty &&
-                                  v$.list.$each.$response.$errors[index]
-                                    .title_en.length,
+                                  v$.list.$each.$response.$errors[index].title_en.length,
                               }"
                             />
                             <div class="invalid-feedback">
                               <div
-                                v-for="error in v$.list.$each.$response.$errors[
-                                  index
-                                ].title_en"
+                                v-for="error in v$.list.$each.$response.$errors[index]
+                                  .title_en"
                                 :key="error"
                               >
-                                {{
-                                  $t("TITLE_EN") + " " + $t(error.$validator)
-                                }}
+                                {{ $t("TITLE_EN") + " " + $t(error.$validator) }}
                               </div>
                             </div>
                           </div>
@@ -185,11 +161,7 @@
                       </div>
                     </div>
                     <div class="col-12 d-flex justify-content-end">
-                      <button
-                        @click="addHello"
-                        class="increments border"
-                        type="button"
-                      >
+                      <button @click="addHello" class="increments border" type="button">
                         +
                       </button>
                     </div>
@@ -201,11 +173,7 @@
               <button type="submit" class="btn btn-primary">
                 {{ $t("SUBMIT") }}
               </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -301,12 +269,8 @@ export default {
           $("#helloFormModal").modal("hide");
         })
         .catch((error) => {
-          data.titleArExist = error.response.data.errors.title_ar
-            ? true
-            : false;
-          data.titleEnExist = error.response.data.errors.title_en
-            ? true
-            : false;
+          data.titleArExist = error.response.data.errors.title_ar ? true : false;
+          data.titleEnExist = error.response.data.errors.title_en ? true : false;
         });
     }
     function update() {
@@ -320,12 +284,8 @@ export default {
           $("#helloFormModal").modal("hide");
         })
         .catch((error) => {
-          data.titleArExist = error.response.data.errors.title_ar
-            ? true
-            : false;
-          data.titleEnExist = error.response.data.errors.title_en
-            ? true
-            : false;
+          data.titleArExist = error.response.data.errors.title_ar ? true : false;
+          data.titleEnExist = error.response.data.errors.title_en ? true : false;
         });
     }
     function touchlist() {

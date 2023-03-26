@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NewChatMessage;
 use App\Http\Requests\MessageRequest;
-use App\Models\ChatRoom;
 use App\Repositories\ChatRepository;
-use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ChatController extends Controller

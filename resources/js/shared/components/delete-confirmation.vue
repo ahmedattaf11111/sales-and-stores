@@ -32,7 +32,7 @@
             data-dismiss="modal"
             @click="$emit('confirm')"
             type="button"
-            class="btn btn-primary"
+            class="btn btn-danger"
           >
             {{ $t("YES") }}
           </button>
