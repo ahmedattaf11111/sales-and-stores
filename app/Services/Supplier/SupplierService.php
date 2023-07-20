@@ -50,8 +50,6 @@ class SupplierService
         return [
             $action == "create" ? "added_by_id" : "updated_by_id" => $user->id,
             "name" => $input["name"],
-            "note" => isset($input["note"]) ? $input["note"] : "",
-            "active" => $input["active"],
             "account_type_id" => 1, //Supplier type
             "is_master" => 0,
             "parent_id" => $supplierParentAccountId,

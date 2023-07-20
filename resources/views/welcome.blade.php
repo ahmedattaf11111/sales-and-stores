@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sales</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo.jpg" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo.jpg" />
+    <title>Karsco</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
-    <link rel="stylesheet" type="text/css" href="https://www.fontstatic.com/f=hanimation" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&family=Marhey:wght@600;700&display=swap" rel="stylesheet">
     <style>
         *:not(.fa, i),
         h1,
@@ -19,7 +19,8 @@
         h4,
         h5,
         h6 {
-            font-family: 'hanimation' !important;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            font-family: 'Marhey', cursive;
             color: #373757;
         }
 
@@ -28,7 +29,7 @@
         }
 
         * {
-            font-size: 15px !important;
+            font-size: 13px !important;
         }
 
         body {
@@ -57,6 +58,22 @@
         /* Handle on hover */
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
+        }
+
+        .swal2-icon-content {
+            font-size: 25px !important;
+        }
+
+        .swal2-styled {
+            width: 54px;
+            margin: 0 5px !important;
+        }
+
+        .swal2-styled.swal2-confirm {
+            background-color: #373063 !important;
+        }
+        .btn:focus {
+            border-color: none !important;
         }
     </style>
 </head>

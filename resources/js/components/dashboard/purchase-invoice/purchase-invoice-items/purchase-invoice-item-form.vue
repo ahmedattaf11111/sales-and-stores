@@ -34,7 +34,11 @@
                         'is-invalid': v$.item_id.$error,
                       }"
                     >
-                      <option v-for="item in items" :key="item.id" :value="item.id">
+                      <option
+                        v-for="item in items"
+                        :key="item.id"
+                        :value="item.id"
+                      >
                         {{ item.name }}
                       </option>
                     </select>
@@ -47,7 +51,9 @@
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("UNIT_OF_MEASURE") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("UNIT_OF_MEASURE")
+                    }}</label>
                     <select
                       class="form-control"
                       v-model="v$.unit_of_measure_id.$model"
@@ -61,7 +67,9 @@
                         :value="selectedItem.main_unit_of_measure.id"
                       >
                         {{
-                          `${selectedItem.main_unit_of_measure.name} (${$t("MAIN_UNIT")})`
+                          `${selectedItem.main_unit_of_measure.name} (${$t(
+                            "MAIN_UNIT"
+                          )})`
                         }}
                       </option>
                       <option
@@ -70,12 +78,17 @@
                         :value="selectedItem.sub_unit_of_measure.id"
                       >
                         {{
-                          `${selectedItem.sub_unit_of_measure.name} (${$t("SUB_UNIT")})`
+                          `${selectedItem.sub_unit_of_measure.name} (${$t(
+                            "SUB_UNIT"
+                          )})`
                         }}
                       </option>
                     </select>
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.unit_of_measure_id.$errors" :key="error">
+                      <div
+                        v-for="error in v$.unit_of_measure_id.$errors"
+                        :key="error"
+                      >
                         {{ $t("UNIT_OF_MEASURE") + " " + $t(error.$validator) }}
                       </div>
                     </div>
@@ -83,7 +96,9 @@
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("RECEIVED_QUANTITY") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("RECEIVED_QUANTITY")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -105,7 +120,9 @@
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("PRICE_UNIT") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("PRICE_UNIT")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -115,18 +132,29 @@
                       }"
                     />
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.purchase_price.$errors" :key="error">
-                        {{ $t("PRICE_UNIT") + " " + $t(error.$validator, { value: 0 }) }}
+                      <div
+                        v-for="error in v$.purchase_price.$errors"
+                        :key="error"
+                      >
+                        {{
+                          $t("PRICE_UNIT") +
+                          " " +
+                          $t(error.$validator, { value: 0 })
+                        }}
                       </div>
                     </div>
                   </div>
                 </div>
                 <template
-                  v-if="selectedItem && selectedItem.type == 'HAS_EXPIRATION_DATE'"
+                  v-if="
+                    selectedItem && selectedItem.type == 'HAS_EXPIRATION_DATE'
+                  "
                 >
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label for="exampleInputEmail1">{{ $t("PRODUCTION_DATE") }}</label>
+                      <label for="exampleInputEmail1">{{
+                        $t("PRODUCTION_DATE")
+                      }}</label>
                       <input
                         type="date"
                         class="form-control"
@@ -136,15 +164,22 @@
                         }"
                       />
                       <div class="invalid-feedback">
-                        <div v-for="error in v$.production_date.$errors" :key="error">
-                          {{ $t("PRODUCTION_DATE") + " " + $t(error.$validator) }}
+                        <div
+                          v-for="error in v$.production_date.$errors"
+                          :key="error"
+                        >
+                          {{
+                            $t("PRODUCTION_DATE") + " " + $t(error.$validator)
+                          }}
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label for="exampleInputEmail1">{{ $t("EXPIRATION_DATE") }}</label>
+                      <label for="exampleInputEmail1">{{
+                        $t("EXPIRATION_DATE")
+                      }}</label>
                       <input
                         type="date"
                         class="form-control"
@@ -154,8 +189,13 @@
                         }"
                       />
                       <div class="invalid-feedback">
-                        <div v-for="error in v$.expiration_date.$errors" :key="error">
-                          {{ $t("EXPIRATION_DATE") + " " + $t(error.$validator) }}
+                        <div
+                          v-for="error in v$.expiration_date.$errors"
+                          :key="error"
+                        >
+                          {{
+                            $t("EXPIRATION_DATE") + " " + $t(error.$validator)
+                          }}
                         </div>
                       </div>
                     </div>
@@ -164,10 +204,14 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -190,6 +234,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const purchase_invoice_item_store = inject("purchase_invoice_item_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       items: [],
       selectedItem: null,
@@ -209,14 +254,20 @@ export default {
       purchase_price: { required, minValue: minValue(0) },
       production_date: {
         required: (value) => {
-          if (data.selectedItem && data.selectedItem.type == "HAS_EXPIRATION_DATE")
+          if (
+            data.selectedItem &&
+            data.selectedItem.type == "HAS_EXPIRATION_DATE"
+          )
             return value;
           return true;
         },
       },
       expiration_date: {
         required: (value) => {
-          if (data.selectedItem && data.selectedItem.type == "HAS_EXPIRATION_DATE")
+          if (
+            data.selectedItem &&
+            data.selectedItem.type == "HAS_EXPIRATION_DATE"
+          )
             return value;
           return true;
         },
@@ -253,30 +304,42 @@ export default {
       purchaseInvoiceItemClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.purchase_invoice_item,
-            item: data.selectedItem,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#purchaseInvoiceItemFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function update() {
       purchaseInvoiceItemClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.purchase_invoice_item,
-            item: data.selectedItem,
-            added_by: props.selectedPurchaseInvoiceItem.added_by,
-            updated_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#purchaseInvoiceItemFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function getForm() {
       return {
@@ -347,6 +410,10 @@ export default {
 
 <style scoped lang="scss">
 .purchase-invoice-item-form {
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+  }
   .modal-header {
     border-color: #e9ecef !important;
   }
@@ -420,7 +487,7 @@ export default {
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
   .modal-footer {
     button {

@@ -22,15 +22,11 @@ class TreasuryService
     public function create($user, $input)
     {
         $input["added_by_id"] = $user->id;
-        $treasuries_ids = $input["treasuries_ids"];
-        unset($input["treasuries_ids"]);
-        return ["treasury" => $this->treasuryRepository->create($input, $treasuries_ids), "user" => $user];
+        return ["treasury" => $this->treasuryRepository->create($input), "user" => $user];
     }
     public function update($user, $input)
     {
         $input["updated_by_id"] = $user->id;
-        $treasuries_ids = $input["treasuries_ids"];
-        unset($input["treasuries_ids"]);
-        return ["treasury" => $this->treasuryRepository->update($input, $treasuries_ids), "user" => $user];
+        return ["treasury" => $this->treasuryRepository->update($input), "user" => $user];
     }
 }

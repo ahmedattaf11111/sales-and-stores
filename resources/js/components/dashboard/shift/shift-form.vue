@@ -42,7 +42,9 @@
                         {{
                           `${treasury.name} ${
                             treasury.open_shift
-                              ? `(${$t("RESERVED_BY")} ${treasury.open_shift.admin.name})`
+                              ? `(${$t("RESERVED_BY")} ${
+                                  treasury.open_shift.admin.name
+                                })`
                               : ""
                           }`
                         }}
@@ -58,10 +60,14 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -83,6 +89,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const shift_store = inject("shift_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       treasuries: [],
     });
@@ -93,11 +100,7 @@ export default {
       treasury_id: { required },
     };
     const v$ = useVuelidate(rules, form);
-    onMounted(() => {
-      shiftClient.getAdminTreasuries().then((response) => {
-        data.treasuries = response.data;
-      });
-    });
+    onMounted(() => {});
     //Methods
     function save() {
       if (v$.value.$invalid) {
@@ -111,15 +114,22 @@ export default {
       shiftClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.shift,
-            admin: response.data.user,
-            treasury:getSelectedTreasury()
+          swal({
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
+        confirmButtonText: t("OK"),
+
           });
+          context.emit("created");
           $("#shiftFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function getForm() {
       return {
@@ -128,6 +138,9 @@ export default {
     }
     function setForm() {
       v$.value.$reset();
+      shiftClient.getAdminTreasuries().then((response) => {
+        data.treasuries = response.data;
+      });
       form.treasury_id = null;
     }
     function getSelectedTreasury() {
@@ -157,31 +170,41 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.submit {
+  background: #373063 !important;
+  color: #fff !important;
+}
 .modal-header {
   border-color: #e9ecef !important;
 }
+
 .modal-footer {
   border: none !important;
 }
+
 .active {
   display: flex;
   justify-content: flex-end;
 }
+
 .shift-form {
   .form-check-label {
     position: relative;
     bottom: 4px;
   }
+
   .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
+
     input {
       opacity: 0;
       width: 0;
       height: 0;
     }
+
     .slider {
       position: absolute;
       cursor: pointer;
@@ -193,6 +216,7 @@ export default {
       -webkit-transition: 0.4s;
       transition: 0.4s;
     }
+
     .slider:before {
       position: absolute;
       content: "";
@@ -204,17 +228,21 @@ export default {
       -webkit-transition: 0.4s;
       transition: 0.4s;
     }
+
     input:checked + .slider {
       background-color: #6d85fb;
     }
+
     input:focus + .slider {
       box-shadow: 0 0 1px #6d85fb;
     }
+
     input:checked + .slider:before {
       -webkit-transform: translateX(26px);
       -ms-transform: translateX(26px);
       transform: translateX(26px);
     }
+
     /* Rounded sliders */
     .slider.round {
       border-radius: 34px;
@@ -224,22 +252,27 @@ export default {
       border-radius: 50%;
     }
   }
+
   .form-group {
     margin-bottom: 10px;
+
     .form-control {
       background-color: transparent;
       padding: 10px;
     }
   }
+
   input {
     border-color: #e7e7e7;
     border-radius: 0 !important;
   }
+
   .modal-footer {
     button {
       width: 80px;
     }
   }
+
   .increments {
     width: 38px;
     height: 37px;
@@ -247,6 +280,7 @@ export default {
     background-color: #f8f9fa;
     border-radius: 5px;
   }
+
   hr {
     color: gray;
   }

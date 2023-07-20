@@ -18,4 +18,5 @@ Route::prefix("shifts")->group(function () {
     Route::get("admin-treasuries", "ShiftController@getAdminTreasuries");
     Route::get("current-shift", "ShiftController@getCurrentShift");
     Route::post("", "ShiftController@create");
+    Route::get("close", "ShiftController@close");
 });

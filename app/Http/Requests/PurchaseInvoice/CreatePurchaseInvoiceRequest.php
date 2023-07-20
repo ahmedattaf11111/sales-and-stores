@@ -28,7 +28,6 @@ class CreatePurchaseInvoiceRequest extends FormRequest
             "invoice_number" => "required|unique:purchase_invoices",
             "supplier_id" => "required|numeric",
             "store_id" => "required|numeric",
-            "note" => "nullable"
         ];
     }
 }

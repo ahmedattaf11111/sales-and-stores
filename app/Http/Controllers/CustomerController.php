@@ -12,6 +12,9 @@ class CustomerController extends Controller
     public function __construct(CustomerService $customerService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create customer_account")->only("create");
+        $this->middleware("permission:super admin|update customer_account")->only("update");
+        $this->middleware("permission:super admin|view customer_account")->only("index");
         $this->customerService = $customerService;
     }
     public function index()

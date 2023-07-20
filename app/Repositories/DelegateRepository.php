@@ -19,6 +19,7 @@ class DelegateRepository
                     });
             })
             ->with(["account.updated_by", "account.added_by"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function create($accountInput, $delegateInput)

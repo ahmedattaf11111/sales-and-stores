@@ -49,7 +49,7 @@ Route::prefix("purchase-invoice-items")->group(function () {
     Route::get("{purchaseInvoiceId}", "PurchaseInvoiceItemController@index");
     Route::post("", "PurchaseInvoiceItemController@create");
     Route::put("", "PurchaseInvoiceItemController@update");
-    Route::delete("{purchaseInvoiceId}/{itemId}", "PurchaseInvoiceItemController@delete");
+    Route::delete("{id}", "PurchaseInvoiceItemController@delete");
     Route::get("is-purchase-invoice-approved/{id}","PurchaseInvoiceItemController@isPurchaseInvoiceApproved");
 });
 

@@ -12,6 +12,9 @@ class DelegateController extends Controller
     public function __construct(DelegateService $delegateService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create delegate_account")->only("create");
+        $this->middleware("permission:super admin|update delegate_account")->only("update");
+        $this->middleware("permission:super admin|view delegate_account")->only("index");
         $this->delegateService = $delegateService;
     }
     public function index()

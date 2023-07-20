@@ -12,6 +12,10 @@ class AccountController extends Controller
     public function __construct(AccountService $accountService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create all_account")->only("create");
+        $this->middleware("permission:super admin|update all_account")->only("update");
+        $this->middleware("permission:super admin|view all_account")->only(["index","getAllAccounts","getTypes"]);
+
         $this->accountService = $accountService;
     }
     public function index()

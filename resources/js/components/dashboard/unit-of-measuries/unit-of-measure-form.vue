@@ -23,13 +23,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="active col-12">
-                  <label class="switch">
-                    <input v-model="active" type="checkbox" :checked="active" />
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-                <div class="col-12">
+                <div class="col-lg-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("NAME") }}</label>
                     <input
@@ -50,26 +44,26 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-check">
-                    <input
-                      type="checkbox"
-                      v-model="is_master"
-                      class="form-check-input"
-                      id="exampleCheck1"
-                    />
-                    <label class="form-check-label" for="exampleCheck1">{{
-                      $t("MASTER")
-                    }}</label>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label>{{ $t("MASTER") }}</label>
+                    <select v-model="is_master" class="form-control">
+                      <option :value="true">{{ $t("YES") }}</option>
+                      <option :value="false">{{ $t("NO") }}</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -91,6 +85,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const unit_of_measure_store = inject("unit_of_measure_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       nameExist: false,
     });
@@ -98,7 +93,6 @@ export default {
       name: "",
       phone: "",
       address: "",
-      active: true,
       is_master: false,
     });
     const rules = {
@@ -123,14 +117,22 @@ export default {
       unitOfMeasureClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.unit_of_measure,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#unitOfMeasureFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+
           data.nameExist = error.response.data.errors.name ? true : false;
         });
     }
@@ -139,15 +141,22 @@ export default {
       unitOfMeasureClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.unit_of_measure,
-            added_by: props.selectedUnitOfMeasure.added_by,
-            updated_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#unitOfMeasureFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+
           data.nameExist = error.response.data.errors.name ? true : false;
         });
     }
@@ -155,17 +164,15 @@ export default {
       return {
         id: props.selectedUnitOfMeasure ? props.selectedUnitOfMeasure.id : null,
         name: form.name,
-        active: form.active,
         is_master: form.is_master,
       };
     }
     function setForm() {
       v$.value.$reset();
       data.nameExist = false;
-      form.name = props.selectedUnitOfMeasure ? props.selectedUnitOfMeasure.name : "";
-      form.active = props.selectedUnitOfMeasure
-        ? Boolean(props.selectedUnitOfMeasure.active)
-        : true;
+      form.name = props.selectedUnitOfMeasure
+        ? props.selectedUnitOfMeasure.name
+        : "";
       form.is_master = props.selectedUnitOfMeasure
         ? Boolean(props.selectedUnitOfMeasure.is_master)
         : false;
@@ -192,31 +199,41 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.submit {
+  background: #373063 !important;
+  color: #fff !important;
+}
 .active {
   display: flex;
   justify-content: flex-end;
 }
+
 .modal-header {
   border-color: #e9ecef !important;
 }
+
 .modal-footer {
   border: none !important;
 }
+
 .unit-of-measure-form {
   .form-check-label {
     position: relative;
     bottom: 4px;
   }
+
   .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
+
     input {
       opacity: 0;
       width: 0;
       height: 0;
     }
+
     .slider {
       position: absolute;
       cursor: pointer;
@@ -228,6 +245,7 @@ export default {
       -webkit-transition: 0.4s;
       transition: 0.4s;
     }
+
     .slider:before {
       position: absolute;
       content: "";
@@ -239,17 +257,21 @@ export default {
       -webkit-transition: 0.4s;
       transition: 0.4s;
     }
+
     input:checked + .slider {
-      background-color: #6d85fb;
+      background-color: #373063;
     }
+
     input:focus + .slider {
-      box-shadow: 0 0 1px #6d85fb;
+      box-shadow: 0 0 1px #373063;
     }
+
     input:checked + .slider:before {
       -webkit-transform: translateX(26px);
       -ms-transform: translateX(26px);
       transform: translateX(26px);
     }
+
     /* Rounded sliders */
     .slider.round {
       border-radius: 34px;
@@ -262,24 +284,32 @@ export default {
 
   .form-group {
     margin-bottom: 10px;
+
     .form-control {
       background-color: transparent;
       padding: 10px;
     }
   }
+  .form-check-label {
+    position: relative;
+    top: 0;
+  }
   input {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px;
+
     &:checked {
-      background: #6d85fb;
-      border-color: #6d85fb !important;
+      background: #373063;
+      border-color: #373063 !important;
     }
   }
+
   .modal-footer {
     button {
       width: 80px;
     }
   }
+
   .increments {
     width: 38px;
     height: 37px;
@@ -287,6 +317,7 @@ export default {
     background-color: #f8f9fa;
     border-radius: 5px;
   }
+
   hr {
     color: gray;
   }

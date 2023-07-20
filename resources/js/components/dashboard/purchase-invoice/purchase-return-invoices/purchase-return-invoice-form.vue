@@ -2,7 +2,7 @@
   <div class="purchase-invoice-form">
     <div
       class="modal fade"
-      id="purchaseReturnInvoiceFormModal"
+      id="purchaseInvoiceFormModal"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -12,7 +12,7 @@
           <form @submit.prevent="save" enctype="multipart/form-data">
             <div class="modal-header">
               <h5 class="modal-title text-secondary" id="exampleModalLabel">
-                {{ $t("GENERAL_PURCHASE_RETURN_INVOICES") }}
+                {{ $t("RETURNS") }}
               </h5>
               <button
                 type="button"
@@ -25,7 +25,9 @@
               <div class="row">
                 <div class="col-lg-6 mb-2">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("INVOICE_DATE") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("INVOICE_DATE")
+                    }}</label>
                     <input
                       type="date"
                       class="form-control"
@@ -37,6 +39,35 @@
                     <div class="invalid-feedback">
                       <div v-for="error in v$.date.$errors" :key="error">
                         {{ $t("INVOICE_DATE") + " " + $t(error.$validator) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-2">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("INVOICE_NUMBER")
+                    }}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="v$.invoice_number.$model"
+                      :class="{
+                        'is-invalid':
+                          v$.invoice_number.$error || invoiceNumberExist,
+                      }"
+                    />
+                    <div class="invalid-feedback">
+                      <div
+                        v-for="error in v$.invoice_number.$errors"
+                        :key="error"
+                      >
+                        {{ $t("INVOICE_NUMBER") + " " + $t(error.$validator) }}
+                      </div>
+                      <div
+                        v-if="!v$.invoice_number.$invalid && invoiceNumberExist"
+                      >
+                        {{ $t("INVOICE_NUMBER") + " " + $t("EXIST") }}
                       </div>
                     </div>
                   </div>
@@ -66,7 +97,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-12">
+                <div class="col-lg-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("STORE") }}</label>
                     <select
@@ -76,7 +107,11 @@
                         'is-invalid': v$.store_id.$error,
                       }"
                     >
-                      <option v-for="store in stores" :key="store.id" :value="store.id">
+                      <option
+                        v-for="store in stores"
+                        :key="store.id"
+                        :value="store.id"
+                      >
                         {{ store.name }}
                       </option>
                     </select>
@@ -87,19 +122,17 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("NOTE") }}</label>
-                    <textarea rows="3" class="form-control" v-model="note"> </textarea>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -115,20 +148,24 @@ import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { inject, onMounted, reactive, toRefs, watch } from "vue-demi";
 import { useI18n } from "vue-i18n";
-import purchaseReturnInvoiceClient from "../../../../shared/http-clients/purchase-invoice/purchase-return-invoice-client";
+import purchaseInvoiceClient from "../../../../shared/http-clients/purchase-invoice/purchase-return-invoice-client";
 export default {
   setup(props, context) {
     const { t, locale } = useI18n({ useScope: "global" });
     const purchase_invoice_store = inject("purchase_invoice_store");
     const toast = inject("toast");
-    const data = reactive({});
+    const swal = inject("swal");
+    const data = reactive({
+      invoiceNumberExist: false,
+    });
     const form = reactive({
       date: "",
+      invoice_number: "",
       supplier_id: null,
       store_id: null,
-      note: "",
     });
     const rules = {
+      invoice_number: { required },
       date: { required },
       supplier_id: { required },
       store_id: { required },
@@ -149,51 +186,80 @@ export default {
     }
     //Commons
     function store() {
-      purchaseReturnInvoiceClient
+      data.invoiceNumberExist = false;
+      purchaseInvoiceClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.purchase_return_invoice,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
-          $("#purchaseReturnInvoiceFormModal").modal("hide");
+          context.emit("created");
+          $("#purchaseInvoiceFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+          data.invoiceNumberExist = error.response.data.errors.invoice_number
+            ? true
+            : false;
+        });
     }
     function update() {
-      purchaseReturnInvoiceClient
+      data.invoiceNumberExist = false;
+      purchaseInvoiceClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.purchase_return_invoice,
-            added_by: props.selectedPurchaseInvoice.added_by,
-            updated_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
-          $("#purchaseReturnInvoiceFormModal").modal("hide");
+          context.emit("updated");
+          $("#purchaseInvoiceFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+          data.invoiceNumberExist = error.response.data.errors.invoice_number
+            ? true
+            : false;
+        });
     }
     function getForm() {
       return {
-        id: props.selectedPurchaseInvoice ? props.selectedPurchaseInvoice.id : null,
+        id: props.selectedPurchaseInvoice
+          ? props.selectedPurchaseInvoice.id
+          : null,
+        invoice_number: form.invoice_number,
         date: form.date,
         supplier_id: form.supplier_id,
         store_id: form.store_id,
-        note: form.note,
       };
     }
     function setForm() {
+      console.log(props.selectedPurchaseInvoice);
       v$.value.$reset();
-      form.date = props.selectedPurchaseInvoice ? props.selectedPurchaseInvoice.date : "";
+      data.invoiceNumberExist = false;
+      form.invoice_number = props.selectedPurchaseInvoice
+        ? props.selectedPurchaseInvoice.invoice_number
+        : "";
+      form.date = props.selectedPurchaseInvoice
+        ? props.selectedPurchaseInvoice.date
+        : "";
       form.store_id = props.selectedPurchaseInvoice
         ? props.selectedPurchaseInvoice.store_id
         : null;
       form.supplier_id = props.selectedPurchaseInvoice
         ? props.selectedPurchaseInvoice.supplier_id
         : null;
-      form.note = props.selectedPurchaseInvoice ? props.selectedPurchaseInvoice.note : "";
     }
     //Watchers
     watch(
@@ -221,10 +287,6 @@ export default {
   .modal-header {
     border-color: #e9ecef !important;
   }
-   input:checked {
-    background: #6d85fb;
-    border-color: #6d85fb !important;
-  }
   .modal-footer {
     border: none !important;
   }
@@ -243,7 +305,11 @@ export default {
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
+  }
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
   }
   .modal-footer {
     button {

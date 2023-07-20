@@ -9,6 +9,7 @@ class InvoiceCategoryRepository
     public function getInvoiceCategories($pageSize, $text)
     {
         return InvoiceCategory::where("name", "like", "%$text%")->with(["added_by", "updated_by"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function create($input)

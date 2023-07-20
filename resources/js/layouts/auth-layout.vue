@@ -1,7 +1,7 @@
 <template>
   <div class="mt-5 mb-2">
     <div class="col-lg-4 col-md-6 m-auto">
-      <Lang />
+      <!-- <Lang /> -->
     </div>
   </div>
   <router-view />

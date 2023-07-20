@@ -7,7 +7,7 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <form @submit.prevent="save" enctype="multipart/form-data">
             <div class="modal-header">
@@ -23,48 +23,37 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div>
-                  <b>{{ $t("AMOUNT_DUE") }}</b> : {{ getTotalAmountAfterDiscount() }}
-                </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("DISCOUNT") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("TOTAL_AMOUNT")
+                    }}</label>
                     <input
+                      disabled="true"
+                      :value="getTotalAmount()"
                       type="text"
                       class="form-control"
-                      v-model="v$.discount.$model"
-                      :class="{
-                        'is-invalid': v$.discount.$error,
-                      }"
                     />
-                    <div class="invalid-feedback">
-                      <div v-for="error in v$.discount.$errors" :key="error">
-                        {{
-                          $t("DISCOUNT") +
-                          " " +
-                          $t(error.$validator, {
-                            value: error.$validator == "minValue" ? 0 : 100,
-                          })
-                        }}
-                      </div>
-                    </div>
-                    <div class="form-check mt-1">
-                      <input
-                        type="checkbox"
-                        v-model="is_discount_percent"
-                        class="form-check-input"
-                        id="exampleCheck1"
-                      />
-                      <label class="form-check-label" for="exampleCheck1">{{
-                        $t("PERCENT")
-                      }}</label>
-                    </div>
                   </div>
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label>{{ $t("PERCENT") }}</label>
+                    <select
+                      :disabled="selectedPurchaseInvoice?.is_approved"
+                      v-model="is_tax_percent"
+                      class="form-control"
+                    >
+                      <option :value="true">{{ $t("YES") }}</option>
+                      <option :value="false">{{ $t("NO") }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("TAX") }}</label>
                     <input
+                      :disabled="selectedPurchaseInvoice?.is_approved"
                       type="text"
                       class="form-control"
                       v-model="v$.tax.$model"
@@ -83,36 +72,92 @@
                         }}
                       </div>
                     </div>
-                    <div class="form-check mt-1">
-                      <input
-                        type="checkbox"
-                        v-model="is_tax_percent"
-                        class="form-check-input"
-                        id="exampleCheck1"
-                      />
-                      <label class="form-check-label" for="exampleCheck1">{{
-                        $t("PERCENT")
-                      }}</label>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("TOTAL_AMOUNT_AFTER_TAX")
+                    }}</label>
+                    <input
+                      disabled="true"
+                      :value="getTotalBeforeDiscount()"
+                      type="text"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label>{{ $t("PERCENT") }}</label>
+                    <select
+                      :disabled="selectedPurchaseInvoice?.is_approved"
+                      v-model="is_discount_percent"
+                      class="form-control"
+                    >
+                      <option :value="true">{{ $t("YES") }}</option>
+                      <option :value="false">{{ $t("NO") }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{ $t("DISCOUNT") }}</label>
+                    <input
+                      :disabled="selectedPurchaseInvoice?.is_approved"
+                      type="text"
+                      class="form-control"
+                      v-model="v$.discount.$model"
+                      :class="{
+                        'is-invalid': v$.discount.$error,
+                      }"
+                    />
+                    <div class="invalid-feedback">
+                      <div v-for="error in v$.discount.$errors" :key="error">
+                        {{
+                          $t("DISCOUNT") +
+                          " " +
+                          $t(error.$validator, {
+                            value: error.$validator == "minValue" ? 0 : 100,
+                          })
+                        }}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-check">
-                    <input
-                      type="checkbox"
-                      v-model="is_deferred"
-                      class="form-check-input"
-                      id="exampleCheck1"
-                    />
-                    <label class="form-check-label" for="exampleCheck1">{{
-                      $t("DEFERRED")
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("TOTAL_AMOUNT_AFTER_DISCOUNT")
                     }}</label>
+                    <input
+                      disabled="true"
+                      :value="getTotalAfterDiscount()"
+                      type="text"
+                      class="form-control"
+                    />
                   </div>
                 </div>
-                <div v-if="is_deferred" class="col-12 mb-2">
+                <div class="col-lg-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("PAID_AMOUNT") }}</label>
+                    <label>{{ $t("DEFERRED") }}</label>
+                    <select
+                      :disabled="selectedPurchaseInvoice?.is_approved"
+                      v-model="is_deferred"
+                      class="form-control"
+                    >
+                      <option :value="true">{{ $t("YES") }}</option>
+                      <option :value="false">{{ $t("NO") }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div v-if="is_deferred" class="col-lg-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("PAID_AMOUNT")
+                    }}</label>
                     <input
+                      :disabled="selectedPurchaseInvoice?.is_approved"
                       type="text"
                       class="form-control"
                       v-model="v$.paid_amount.$model"
@@ -120,22 +165,40 @@
                     />
                     <div class="invalid-feedback">
                       <div v-for="error in v$.paid_amount.$errors" :key="error">
-                        {{ $t("PAID_AMOUNT") + " " + $t(error.$validator, { value: 0 }) }}
+                        {{
+                          $t("PAID_AMOUNT") +
+                          " " +
+                          $t(error.$validator, { value: 0 })
+                        }}
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <b>{{ $t("REMAINING_AMOUNT") }}</b> :
-                    {{ getTotalAmountAfterDiscount() - paid_amount }}
+                </div>
+                <div v-if="is_deferred" class="col-lg-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("REMAINING_AMOUNT")
+                    }}</label>
+                    <input
+                      :disabled="selectedPurchaseInvoice?.is_approved"
+                      disabled="true"
+                      :value="getTotalAfterDiscount() - paid_amount"
+                      type="text"
+                      class="form-control"
+                    />
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -157,6 +220,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const purchase_invoice_store = inject("purchase_invoice_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const form = reactive({
       discount: 0,
       is_discount_percent: true,
@@ -192,22 +256,40 @@ export default {
           return true;
         },
         exceedAmountDue: (value) => {
-          if (form.is_deferred) return value <= getTotalAmountAfterDiscount();
+          if (form.is_deferred) return value <= getTotalAfterDiscount();
           return true;
         },
       },
     };
     const v$ = useVuelidate(rules, form);
     //Methods
-    function getTotalAmountAfterDiscount() {
-      if (props.selectedPurchaseInvoice) {
-        return (
-          Number.parseFloat(props.selectedPurchaseInvoice.total_purchase_price) +
-          Number.parseFloat(getTaxValue(props.selectedPurchaseInvoice)) -
-          Number.parseFloat(getDiscountValue(props.selectedPurchaseInvoice))
-        );
-      }
+    function getTotalAmount() {
+      return props.selectedPurchaseInvoice
+        ? props.selectedPurchaseInvoice.total_purchase_price
+        : 0;
     }
+    function getTotalBeforeDiscount() {
+      let total = getTotalAmount();
+      return total + Number.parseFloat(getTaxValue(total));
+    }
+    function getTotalAfterDiscount() {
+      let total = getTotalAmount();
+      return total +
+        Number.parseFloat(getTaxValue(total)) -
+        Number.parseFloat(getDiscountValue(total));
+    }
+    function getTaxValue(totalAmount) {
+      console.log(totalAmount);
+      console.log(form.is_tax_percent);
+      console.log(form.tax);
+      return form.is_tax_percent ? (form.tax / 100) * totalAmount : form.tax;
+    }
+    function getDiscountValue(totalAmount) {
+      return form.is_discount_percent
+        ? (form.discount / 100) * totalAmount
+        : form.discount;
+    }
+
     function save() {
       if (v$.value.$invalid) {
         v$.value.$touch();
@@ -216,31 +298,25 @@ export default {
       approve();
     }
     //Commons
-    function getTaxValue(purchaseInvoice) {
-      return form.is_tax_percent
-        ? (form.tax / 100) * purchaseInvoice.total_purchase_price
-        : form.tax;
-    }
-    function getDiscountValue(purchaseInvoice) {
-      return form.is_discount_percent
-        ? (form.discount / 100) * purchaseInvoice.total_purchase_price
-        : form.discount;
-    }
     function approve() {
       purchaseInvoiceClient
         .approve(getForm())
         .then((response) => {
-          toast.success(t("INVOICE_APPROVED"));
-          context.emit("onApproved", {
-            ...response.data.purchase_invoice,
-            approved_by: response.data.user,
-            updated_by: props.selectedPurchaseInvoice.updated_by,
-            added_by: props.selectedPurchaseInvoice.added_by,
-            total_amount: response.data.total_amount,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("onApproved");
           $("#approveInvoiceFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function getForm() {
       return {
@@ -274,7 +350,9 @@ export default {
     );
     return {
       ...toRefs(form),
-      getTotalAmountAfterDiscount,
+      getTotalAmount,
+      getTotalAfterDiscount,
+      getTotalBeforeDiscount,
       v$,
       save,
     };
@@ -285,38 +363,50 @@ export default {
 
 <style scoped lang="scss">
 .approve-invoice-form {
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+  }
   .modal-header {
     border-color: #e9ecef !important;
   }
+
   input:checked {
     background: #6d85fb;
     border-color: #6d85fb !important;
   }
+
   .modal-footer {
     border: none !important;
   }
+
   .form-check-label {
     position: relative;
     bottom: 4px;
   }
+
   .form-group {
     margin-bottom: 10px;
+
     .form-control {
       background-color: transparent;
       padding: 10px;
     }
   }
+
   input,
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
+
   .modal-footer {
     button {
       width: 80px;
     }
   }
+
   .increments {
     width: 38px;
     height: 37px;
@@ -324,6 +414,7 @@ export default {
     background-color: #f8f9fa;
     border-radius: 5px;
   }
+
   hr {
     color: gray;
   }

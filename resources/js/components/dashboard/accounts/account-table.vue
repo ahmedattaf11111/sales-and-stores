@@ -6,108 +6,272 @@
       :types="types"
       :selectedAccount="selectedAccount"
     />
-    <Information :infos="infos" />
     <Filter
       @onSelectType="onSelectType"
       @onSelectMaster="onSelectMaster"
       :types="types"
     />
-
-    <div class="header">
-      <h2 class="welcome">
-        <b>{{ $t("HELLO") }}</b
-        >, {{ $t("WELCOME_HERE") }}
-      </h2>
-      <div class="title">
-        <router-link to="/admin-panel-settings">{{ $t("HOME") }}</router-link>
-        /
-        <span>{{ $t("ALL_ACCOUNTS") }}</span>
+    <div v-if="!accounts.length" class="no-data-found text-center">
+      <div>
+        {{ $t("NO_DATE_FOUND") }}
       </div>
+      <button
+        :disabled="!hasPermission('create all_account')"
+        @click="onAddClicked"
+        data-toggle="modal"
+        data-target="#accountFormModal"
+        class="btn submit mt-3"
+      >
+        {{ $t("ADD_NEW") }}
+      </button>
+      <button v-if="text" @click="back" class="btn submit mt-3">
+        {{ $t("BACK") }}
+      </button>
     </div>
-    <div class="px-4">
+
+    <div v-else class="px-4">
       <div class="table-container">
-        <div class="controls">
-          <div class="search">
-            <input
-              @keyup="search"
-              v-model="text"
-              type="text"
-              :placeholder="$t('SEARCH')"
-            />
-            <i class="fa fa-search"></i>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="header">{{ $t("ACCOUNTS_TABLE") }}</div>
           </div>
-          <div class="actions">
-            <span data-toggle="tooltip" data-placement="top" :title="$t('ADD')">
-              <button
-                @click="onAddClicked()"
-                data-toggle="modal"
-                data-target="#accountFormModal"
-                class="border text-secondary"
-              >
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-            </span>
-            <span data-toggle="tooltip" data-placement="top" :title="$t('FILTER')">
-              <button
-                data-toggle="modal"
-                data-target="#filter"
-                class="border text-secondary"
-              >
-                <i class="fa fa-filter" aria-hidden="true"></i>
-              </button>
-            </span>
+          <div class="col-md-6 sec-sec">
+            <div class="row">
+              <div class="col-md-7">
+                <div class="controls mb-2">
+                  <div class="search">
+                    <div class="icon">
+                      <i class="fa fa-search"></i>
+                      <span class="vert-line"></span>
+                    </div>
+                    <input
+                      @keyup="search"
+                      v-model="text"
+                      type="text"
+                      :placeholder="$t('SEARCH')"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <button
+                  :disabled="!hasPermission('create all_account')"
+                  @click="onAddClicked()"
+                  data-toggle="modal"
+                  data-target="#accountFormModal"
+                  class="add text-secondary"
+                >
+                  {{ $t("ADD_NEW") }}
+                </button>
+              </div>
+              <div class="col-md-1">
+                <button
+                  data-toggle="modal"
+                  data-target="#filter"
+                  class="filter text-secondary"
+                >
+                  <i class="fa fa-filter" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="table-responsive">
           <table class="table">
             <thead>
-              <tr>
-                <th scope="col">{{ $t("NAME") }}</th>
+              <tr class="head">
+                <th scope="col">
+                  <span>{{ $t("NAME") }}</span>
+                  <span
+                    :style="
+                      $i18n.locale == 'en'
+                        ? 'margin-left: 10px'
+                        : 'margin-right: 10px'
+                    "
+                  >
+                    <i
+                      class="fa fa-arrow-up"
+                      style="font-size: 11px !important"
+                    ></i>
+                    <i
+                      class="fa fa-arrow-down"
+                      style="font-size: 11px !important; color: #c2c2c2"
+                    ></i>
+                  </span>
+                </th>
+                <th scope="col">
+                  <span>{{ $t("ACCOUNT_NUMBER") }}</span>
+                  <span
+                    :style="
+                      $i18n.locale == 'en'
+                        ? 'margin-left: 10px'
+                        : 'margin-right: 10px'
+                    "
+                  >
+                    <i
+                      class="fa fa-arrow-up"
+                      style="font-size: 11px !important"
+                    ></i>
+                    <i
+                      class="fa fa-arrow-down"
+                      style="font-size: 11px !important; color: #c2c2c2"
+                    ></i>
+                  </span>
+                </th>
+                <th scope="col">
+                  <span>{{ $t("ACCOUNT_TYPE") }}</span>
+                  <span
+                    :style="
+                      $i18n.locale == 'en'
+                        ? 'margin-left: 10px'
+                        : 'margin-right: 10px'
+                    "
+                  >
+                    <i
+                      class="fa fa-arrow-up"
+                      style="font-size: 11px !important"
+                    ></i>
+                    <i
+                      class="fa fa-arrow-down"
+                      style="font-size: 11px !important; color: #c2c2c2"
+                    ></i>
+                  </span>
+                </th>
+                <th scope="col">
+                  <span>{{ $t("MASTER") }}</span>
+                  <span
+                    :style="
+                      $i18n.locale == 'en'
+                        ? 'margin-left: 10px'
+                        : 'margin-right: 10px'
+                    "
+                  >
+                    <i
+                      class="fa fa-arrow-up"
+                      style="font-size: 11px !important"
+                    ></i>
+                    <i
+                      class="fa fa-arrow-down"
+                      style="font-size: 11px !important; color: #c2c2c2"
+                    ></i>
+                  </span>
+                </th>
+                <th scope="col">
+                  <span>{{ $t("PARENT_ACCOUNT") }}</span>
+                  <span
+                    :style="
+                      $i18n.locale == 'en'
+                        ? 'margin-left: 10px'
+                        : 'margin-right: 10px'
+                    "
+                  >
+                    <i
+                      class="fa fa-arrow-up"
+                      style="font-size: 11px !important"
+                    ></i>
+                    <i
+                      class="fa fa-arrow-down"
+                      style="font-size: 11px !important; color: #c2c2c2"
+                    ></i>
+                  </span>
+                </th>
+                <th scope="col">
+                  <span>{{ $t("START_BALANCE") }}</span>
+                  <span
+                    :style="
+                      $i18n.locale == 'en'
+                        ? 'margin-left: 10px'
+                        : 'margin-right: 10px'
+                    "
+                  >
+                    <i
+                      class="fa fa-arrow-up"
+                      style="font-size: 11px !important"
+                    ></i>
+                    <i
+                      class="fa fa-arrow-down"
+                      style="font-size: 11px !important; color: #c2c2c2"
+                    ></i>
+                  </span>
+                </th>
                 <th scope="col">{{ $t("ACTIONS") }}</th>
+                <th class="text-center">{{ $t("INFORMATION") }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(account, index) in accounts" :key="account.id">
+              <tr
+                class="value"
+                v-for="(account, index) in accounts"
+                :key="account.id"
+              >
                 <td>{{ account.name }}</td>
+                <td>{{ account.id }}</td>
+                <td>{{ account.account_type.name }}</td>
                 <td>
-                  <div class="actions">
-                    <span data-toggle="tooltip" data-placement="top" :title="$t('EDIT')">
-                      <button
-                        @click="onEditClicked(account, index)"
-                        data-toggle="modal"
-                        data-target="#accountFormModal"
-                        class="border text-secondary"
-                      >
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                    </span>
-                    <span
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      :title="$t('DETAILS')"
+                  <span class="active">{{
+                    account.is_master == 1 ? $t("YES") : $t("NO")
+                  }}</span>
+                </td>
+                <td>
+                  {{ account.is_master == 1 ? "-" : account.parent.name }}
+                </td>
+                <td>{{ account.start_balance }}</td>
+                <td>
+                  <div class="dropdown commands">
+                    <button
+                      class="btn dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
                     >
-                      <button
-                        @click="onItemInfoClicked(account)"
-                        data-toggle="modal"
-                        data-target="#info"
-                        class="border text-secondary"
-                      >
-                        <i class="fa fa-info" aria-hidden="true"></i>
-                      </button>
-                    </span>
+                      {{ $t("COMMANDS") }}
+                    </button>
+                    <div
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton"
+                    >
+                      <div class="text">
+                        <button
+                          :disabled="!hasPermission('update all_account')"
+                          @click="onEditClicked(account, index)"
+                          data-toggle="modal"
+                          data-target="#accountFormModal"
+                          class="text-secondary"
+                        >
+                          <span>{{ $t("EDIT") }}</span>
+                          <i class="fa fa-edit" style="color: #2bd27f"></i>
+                        </button>
+                      </div>
+                    </div>
                   </div>
+                </td>
+                <td class="text-center">
+                  <button
+                    @click="onItemInfoClicked(account)"
+                    data-toggle="modal"
+                    data-target="#info"
+                    class="info"
+                  >
+                    <i class="fa fa-info"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="mt-1">
+        <div class="mt-4 d-flex justify-content-end">
           <paginate
             v-model="page"
             :pageCount="pageCounts"
             :clickHandler="getAccounts"
-            :prevText="$t('PREV')"
-            :nextText="$t('NEXT')"
+            :prevText="`<i class='fa fa-arrow-${
+              $i18n.locale == 'en' ? 'left' : 'right'
+            }'></i>`"
+            :nextText="`<i class='fa fa-arrow-${
+              $i18n.locale == 'en' ? 'right' : 'left'
+            }'></i>`"
           >
           </paginate>
         </div>
@@ -116,26 +280,26 @@
   </div>
 </template>
 <script>
+import authClient from "../../../shared/http-clients/auth-client";
 import accountClient from "../../../shared/http-clients/account-client";
 import Paginate from "vuejs-paginate-next";
 import AccountForm from "./account-form.vue";
 import accountStore from "./account-store";
 import { inject, provide, reactive, toRefs } from "vue-demi";
 import { useI18n } from "vue-i18n";
-import Information from "../../../shared/components/information.vue";
 import Filter from "./filter";
 
 export default {
   components: {
     Paginate,
     AccountForm,
-    Information,
-    Filter
+    Filter,
   },
   setup() {
     const data = reactive({
-      pageSize: 6,
+      pageSize: 20,
       page: 1,
+      currentPermissions: [],
       accounts: [],
       types: [],
       text: "",
@@ -148,10 +312,23 @@ export default {
       infos: [],
     });
     const toast = inject("toast");
+    const swal = inject("swal");
     const { t, locale } = useI18n({ useScope: "global" });
     provide("account_store", accountStore);
     created();
     //Methods
+    function back() {
+      data.text = "";
+      search();
+    }
+
+    function hasPermission(permission) {
+      let filterResult = data.currentPermissions.filter(
+        (perm) => perm.name == permission || perm.name == "super admin"
+      );
+      return filterResult.length > 0 ? true : false;
+    }
+
     function onSelectType(event) {
       data.account_type_id = event;
       data.page = 1;
@@ -162,23 +339,24 @@ export default {
       data.page = 1;
       getAccounts();
     }
-    function onItemInfoClicked(account) {
-      let infos = [
-        { header: "CREATED_AT", text: account.created_at, textDateTime: true },
-        { header: "BY", text: account.added_by.name },
-      ];
-      if (account.updated_by) {
-        infos = infos.concat([
-          {
-            header: "UPDATED_AT",
-            text: account.updated_at,
-            textDateTime: true,
-          },
-          { header: "BY", text: account.updated_by.name },
-        ]);
-      }
-      infos.push({ header: "ACCOUNT_NUMBER", text: account.id });
-      data.infos = infos;
+
+    function onItemInfoClicked(element) {
+      swal({
+        icon: "warning",
+        confirmButtonText: t("OK"),
+        title: t("LOG"),
+        text: `${t("CREATED")} ${
+          locale.value == "ar" ? element.ar_created_at : element.en_created_at
+        } ${t("BY")} ${element.added_by.name} ${
+          element.updated_by
+            ? `| ${t("UPDATED")} ${
+                locale.value == "ar"
+                  ? element.ar_updated_at
+                  : element.en_updated_at
+              } ${t("BY")} ${element.updated_by.name}`
+            : ""
+        }`,
+      });
     }
     function onAddClicked() {
       data.selectedAccount = null;
@@ -220,11 +398,11 @@ export default {
       });
     }
     function onCreated(event) {
-      data.accounts.unshift(event);
+      data.page = 1;
+      getAccounts();
     }
     function onUpdated(event) {
-      data.accounts[data.selectedAccountIndex] = event;
-      data.selectedAccount = null;
+      getAccounts();
     }
     function search(debounceSearch = true) {
       data.page = 1;
@@ -240,9 +418,15 @@ export default {
     function created() {
       getAccounts();
       getTypes();
+      authClient.currentPermissions().then((res) => {
+        data.currentPermissions = res.data;
+        console.log(data.currentPermissions);
+      });
     }
     return {
       ...toRefs(data),
+      back,
+      hasPermission,
       onSelectType,
       onSelectMaster,
       onAddClicked,
@@ -259,100 +443,215 @@ export default {
 
 <style lang="scss">
 .account-container {
-  padding-bottom: 50px;
-  .header {
-    * {
-      font-size: 17px !important;
+  padding: 30px 0;
+  .filter {
+    margin-top: 8px;
+    border: unset !important;
+    background: none !important;
+    i {
+      color: #373757 !important;
+      font-size: 20px !important;
     }
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 30px;
-    .welcome {
-      padding-top: 9px;
-    }
-    .title {
-      * {
-        color: #6c757d !important;
-      }
-      a {
-        text-decoration: none;
-        color: #868e96 !important;
-        &:hover {
-          color: #6c757d !important;
-        }
-      }
+  }
+  .info {
+    border-radius: 50%;
+    border: unset !important;
+    width: 24px;
+    height: 23px;
+    background: #e7fbf0;
+    color: #2bd27f !important;
+    i {
+      font-size: 11px !important;
     }
   }
   .table-container {
+    .data-table {
+      margin-bottom: 30px;
+      font-size: 15px !important;
+    }
+    .header {
+      font-size: 15px !important;
+    }
+
+    input::placeholder {
+      font-size: 14px;
+      color: #b9b9b9;
+      position: relative;
+      top: 2px;
+    }
     background: #ffffff;
-    box-shadow: 0 5px 20px rgb(0 0 0 / 10%);
     padding: 30px;
-    .controls {
+    .top-sec {
       display: flex;
       justify-content: space-between;
-      @media (max-width: 500px) {
-        flex-direction: column;
-      }
-      body[dir="ltr"] & {
-        .search {
-          i {
-            right: 25px;
-          }
-        }
-      }
-      body[dir="rtl"] & {
-        .search {
-          i {
-            left: 25px;
-          }
-        }
-      }
+    }
+    .sec-sec {
+      margin-bottom: 33px;
+    }
+    .controls {
       .search {
-        margin-bottom: 10px;
-        i {
-          position: relative;
-          top: 1px;
-          color: #888888;
+        display: flex;
+        align-items: center;
+        body[dir="ltr"] & {
+          .icon {
+            .vert-line {
+              margin-left: 17px;
+              height: 23px;
+              border-right: 1px solid #091023 !important;
+            }
+            display: flex;
+            align-items: center;
+            padding: 6px 0px 9px 22px;
+            border-top: 1px solid #091023 !important;
+            border-bottom: 1px solid #091023 !important;
+            border-left: 1px solid #091023 !important;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+          }
+          input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid #dee2e6 !important;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-top: 1px solid #091023 !important;
+            border-bottom: 1px solid #091023 !important;
+            border-right: 1px solid #091023 !important;
+            border-left: none !important;
+            width: 100%;
+          }
         }
-        input {
-          padding: 4px 15px;
-          border: 1px solid #dee2e6 !important;
-          border-radius: 5px;
+        body[dir="rtl"] & {
+          .icon {
+            .vert-line {
+              margin-right: 17px;
+              height: 23px;
+              border-left: 1px solid #091023 !important;
+            }
+            display: flex;
+            align-items: center;
+            padding: 6px 22px 9px 0px;
+            border-top: 1px solid #091023 !important;
+            border-bottom: 1px solid #091023 !important;
+            border-right: 1px solid #091023 !important;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+          }
+          input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid #dee2e6 !important;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            border-top: 1px solid #091023 !important;
+            border-bottom: 1px solid #091023 !important;
+            border-left: 1px solid #091023 !important;
+            border-right: none !important;
+            width: 100%;
+          }
         }
       }
     }
-    .actions {
-      display: flex;
-      a:hover {
-        cursor: text;
-      }
-      button {
-        width: 34px;
-        height: 34px;
-        background: none;
-        margin: 3px 5px;
-        border-radius: 5px;
-      }
+    .add {
+      color: #fff !important;
+      padding: 8px 25px;
+      border-radius: 50px;
+      font-size: 13px !important;
+      background: #373063 !important;
+      border: 1px solid #373063 !important;
     }
+
     a:hover {
       cursor: pointer;
     }
-    .page-link {
-      padding: 3px 18px !important;
-    }
-    .active {
-      a {
-        color: #fff !important;
-        background-color: #6d85fb !important;
-        border-color: #dbdbdb !important;
+    .pagination {
+      .active {
+        a {
+          color: #fff !important;
+          background-color: #00d82c !important;
+          border-color: #dbdbdb !important;
+          box-shadow: 0 5px 10px rgba(0, 216, 44, 0.3) !important;
+        }
+      }
+      .page-item .page-link {
+        border-radius: 4px;
+        border: unset;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #373757;
       }
     }
     table {
+      .active {
+        font-weight: 300;
+        width: 85px;
+        color: #2bd27f !important;
+        background: #e7fbf0;
+        border-radius: 2px;
+        font-size: 12px !important;
+        text-align: center;
+        display: inline-block;
+        padding-top: 1px;
+      }
       td,
       th {
-        width: 50%;
+        vertical-align: middle;
+        white-space: nowrap;
       }
+      tr.head {
+        border: 1px solid #f9f9f9 !important;
+      }
+      tr.value td:not(.first) {
+        border-bottom: 13px solid #fff;
+      }
+      tr.value {
+        background: #f9f9f9;
+      }
+      td {
+        padding: 8px 12px !important;
+      }
+      th {
+        padding: 12px !important;
+      }
+    }
+  }
+  .commands {
+    .dropdown-toggle {
+      padding: 0;
+      &:hover {
+        border: unset !important;
+      }
+    }
+    .dropdown-menu {
+      .text:first {
+        padding-bottom: 8px;
+      }
+      button {
+        display: flex;
+        width: 100%;
+        background: none;
+        border: unset !important;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 10px;
+      }
+    }
+  }
+  .no-data-found {
+    margin-top: 200px;
+    i {
+      font-size: 40px !important;
+      margin-bottom: 20px;
+    }
+    .submit {
+      border: 1px solid #373063 !important;
+      color: #373063 !important;
+      margin-top: 25px !important;
+      width: 90px;
+      margin: 0 5px;
     }
   }
 }

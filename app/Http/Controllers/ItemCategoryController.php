@@ -12,6 +12,11 @@ class ItemCategoryController extends Controller
     public function __construct(ItemCategoryService $itemCategoryService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create item-category")->only("create");
+        $this->middleware("permission:super admin|update item-category")->only("update");
+        $this->middleware("permission:super admin|delete item-category")->only("delete");
+        $this->middleware("permission:super admin|view item-category")->only("index");
+        
         $this->itemCategoryService = $itemCategoryService;
     }
     public function index()

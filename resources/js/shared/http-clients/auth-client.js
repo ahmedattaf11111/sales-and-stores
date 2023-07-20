@@ -11,5 +11,14 @@ export default {
     },
     getCurrentUser() {
         return axios.get(`${BASE_URL}/current-user`);
+    },
+    store() {
+        return axios.get(`${BASE_URL}/current-user`);
+    },
+    hasPermission(screen) {
+        return axios.get(`${BASE_URL}/has-permission/${screen}`);
+    },
+    currentPermissions() {
+        return axios.get(`${BASE_URL}/current-permissions`);
     }
 }

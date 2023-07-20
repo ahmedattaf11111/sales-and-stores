@@ -27,10 +27,10 @@ class UpdateAdminRequest extends FormRequest
             "id" => "required|numeric",
             "name" => "required",
             "email" => "required|unique:admins,email," . $this->id,
-        "active" => "required|boolean",
-            "password" => "nullable",
             "treasuries_ids" => "array",
             "treasuries_ids.*" => "required|numeric",
+            "permissions" => "array",
+            "permissions.*" => "required",
         ];
     }
 }

@@ -8,14 +8,16 @@ use App\Models\TreasuryTransaction;
 
 class TreasuryTransactionRepository
 {
-    public function getTreasuryTransactions($pageSize, $type)
+    public function getTreasuryTransactions($pageSize, $type, $text)
     {
         return TreasuryTransaction::with([
-            "moveType", "added_by", "shift.treasury", "account", "purchaseInvoice","saleInvoice"
+            "moveType", "added_by", "shift.treasury", "account", "purchaseInvoice", "saleInvoice"
         ])
             ->when($type, function ($query) use ($type) {
                 $query->where("type", $type);
-            })->paginate($pageSize);
+            })->when($text, function ($query) use ($text) {
+                $query->where("collect_receipt_number", $text)->orWhere("exchange_receipt_number", $text);
+            })->orderByDesc("id")->paginate($pageSize);
     }
     public function getAccounts()
     {

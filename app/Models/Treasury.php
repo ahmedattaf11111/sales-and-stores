@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Treasury extends Model
 {
+    protected $appends = ["ar_created_at", "en_created_at","ar_updated_at","en_updated_at"];
+
     use Date;
     protected $guarded = [];
     public function updated_by()
@@ -16,15 +18,6 @@ class Treasury extends Model
     public function added_by()
     {
         return $this->belongsTo(Admin::class);
-    }
-    public function subTreasuries()
-    {
-        return $this->belongsToMany(
-            Treasury::class,
-            "sub_treasuries",
-            "main_treasury_id",
-            "sub_treasury_id"
-        );
     }
     public function shifts()
     {

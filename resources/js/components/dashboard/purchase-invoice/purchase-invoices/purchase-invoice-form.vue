@@ -25,7 +25,9 @@
               <div class="row">
                 <div class="col-lg-6 mb-2">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("INVOICE_DATE") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("INVOICE_DATE")
+                    }}</label>
                     <input
                       type="date"
                       class="form-control"
@@ -43,23 +45,30 @@
                 </div>
                 <div class="col-lg-6 mb-2">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("INVOICE_NUMBER") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("INVOICE_NUMBER")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
                       v-model="v$.invoice_number.$model"
                       :class="{
-                        'is-invalid': v$.invoice_number.$error || invoiceNumberExist,
+                        'is-invalid':
+                          v$.invoice_number.$error || invoiceNumberExist,
                       }"
                     />
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.invoice_number.$errors" :key="error">
+                      <div
+                        v-for="error in v$.invoice_number.$errors"
+                        :key="error"
+                      >
                         {{ $t("INVOICE_NUMBER") + " " + $t(error.$validator) }}
                       </div>
-                      <div v-if="!v$.invoice_number.$invalid && invoiceNumberExist">
+                      <div
+                        v-if="!v$.invoice_number.$invalid && invoiceNumberExist"
+                      >
                         {{ $t("INVOICE_NUMBER") + " " + $t("EXIST") }}
                       </div>
-                      
                     </div>
                   </div>
                 </div>
@@ -98,7 +107,11 @@
                         'is-invalid': v$.store_id.$error,
                       }"
                     >
-                      <option v-for="store in stores" :key="store.id" :value="store.id">
+                      <option
+                        v-for="store in stores"
+                        :key="store.id"
+                        :value="store.id"
+                      >
                         {{ store.name }}
                       </option>
                     </select>
@@ -109,19 +122,17 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("NOTE") }}</label>
-                    <textarea rows="3" class="form-control" v-model="note"> </textarea>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -143,6 +154,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const purchase_invoice_store = inject("purchase_invoice_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       invoiceNumberExist: false,
     });
@@ -151,7 +163,6 @@ export default {
       invoice_number: "",
       supplier_id: null,
       store_id: null,
-      note: "",
     });
     const rules = {
       invoice_number: { required },
@@ -160,8 +171,7 @@ export default {
       store_id: { required },
     };
     const v$ = useVuelidate(rules, form);
-    onMounted(() => {
-    });
+    onMounted(() => {});
     //Methods
     function save() {
       if (v$.value.$invalid) {
@@ -180,14 +190,20 @@ export default {
       purchaseInvoiceClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.purchase_invoice,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#purchaseInvoiceFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
           data.invoiceNumberExist = error.response.data.errors.invoice_number
             ? true
             : false;
@@ -198,15 +214,20 @@ export default {
       purchaseInvoiceClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.purchase_invoice,
-            added_by: props.selectedPurchaseInvoice.added_by,
-            updated_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#purchaseInvoiceFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
           data.invoiceNumberExist = error.response.data.errors.invoice_number
             ? true
             : false;
@@ -214,12 +235,13 @@ export default {
     }
     function getForm() {
       return {
-        id: props.selectedPurchaseInvoice ? props.selectedPurchaseInvoice.id : null,
+        id: props.selectedPurchaseInvoice
+          ? props.selectedPurchaseInvoice.id
+          : null,
         invoice_number: form.invoice_number,
         date: form.date,
         supplier_id: form.supplier_id,
         store_id: form.store_id,
-        note: form.note,
       };
     }
     function setForm() {
@@ -229,14 +251,15 @@ export default {
       form.invoice_number = props.selectedPurchaseInvoice
         ? props.selectedPurchaseInvoice.invoice_number
         : "";
-      form.date = props.selectedPurchaseInvoice ? props.selectedPurchaseInvoice.date : "";
+      form.date = props.selectedPurchaseInvoice
+        ? props.selectedPurchaseInvoice.date
+        : "";
       form.store_id = props.selectedPurchaseInvoice
         ? props.selectedPurchaseInvoice.store_id
         : null;
       form.supplier_id = props.selectedPurchaseInvoice
         ? props.selectedPurchaseInvoice.supplier_id
         : null;
-      form.note = props.selectedPurchaseInvoice ? props.selectedPurchaseInvoice.note : "";
     }
     //Watchers
     watch(
@@ -282,7 +305,11 @@ export default {
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
+  }
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
   }
   .modal-footer {
     button {

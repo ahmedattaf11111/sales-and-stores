@@ -4,7 +4,7 @@
       <i class="fa fa-globe m-2"></i> English
     </a>
     <a href="" v-if="$i18n.locale == 'en'" @click.prevent="changeLang('ar')">
-      <i class="fa fa-globe m-2"></i> عربى
+      <i class="fa fa-globe m-2"></i> <span :style="$i18n.locale=='en'?'position:relative;bottom:4px':''">عربي</span>
     </a>
   </div>
 </template>

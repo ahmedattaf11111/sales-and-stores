@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 
 class AdminSeeder extends Seeder
 {
@@ -14,10 +15,14 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        Admin::create([
+        $admin = Admin::create([
             "name" => "Super Admin",
             "email" => "superadmin@admin.com",
             "password" => "123456"
         ]);
+        Permission::create(
+            ["name" => "super admin", "guard_name" => "admin"],
+        );
+        $admin->givePermissionTo("super admin");
     }
 }

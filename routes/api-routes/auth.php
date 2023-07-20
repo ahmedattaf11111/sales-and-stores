@@ -21,4 +21,6 @@ Route::prefix("auth")->group(function () {
     Route::get("logout", "AuthController@logout");
     Route::get('current-user', "AuthController@getCurrentUser");
     Route::get('verify-token', "AuthController@verifyToken");
+    Route::get('has-permission/{screenName}', "AuthController@hasPermission");
+    Route::get('current-permissions', "AuthController@getCurrentPermissions");
 });

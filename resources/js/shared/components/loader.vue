@@ -21,7 +21,7 @@ export default {
   },
   data(){
     return {
-      color:"#2caae2",
+      color:"#373757",
       width:80,
       height:80,
       canCancel:true,

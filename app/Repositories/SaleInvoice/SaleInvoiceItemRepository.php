@@ -39,12 +39,10 @@ class SaleInvoiceItemRepository
             "item"
         )->get();
     }
-    public function deleteItem($input)
+    public function deleteItem($id)
     {
         //Delete item
-        SaleInvoiceItem::where("store_id", $input["store_id"])->where("batch_id", $input["batch_id"])
-        ->where("item_id", $input["item_id"])
-            ->first()->delete();
+        SaleInvoiceItem::where("id", $id)->delete();
     }
     public function incrementBatchQuantity($input)
     {

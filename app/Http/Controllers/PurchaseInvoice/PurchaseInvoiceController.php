@@ -14,6 +14,14 @@ class PurchaseInvoiceController extends Controller
     public function __construct(PurchaseInvoiceService $purchaseInvoiceService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create purchase_invoice")->only("create");
+        $this->middleware("permission:super admin|update purchase_invoice")->only("update");
+        $this->middleware("permission:super admin|approve purchase_invoice")->only("approve");
+        $this->middleware("permission:super admin|delete purchase_invoice")->only("delete");
+        $this->middleware("permission:super admin|view purchase_invoice")->only([
+            "index", "getStores",
+            "getSuppliers", "getCurrentShift"
+        ]);
         $this->purchaseInvoiceService = $purchaseInvoiceService;
     }
     public function index()

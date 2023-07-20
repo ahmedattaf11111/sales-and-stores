@@ -9,7 +9,7 @@ class UnitOfMeasureRepository
     public function getUnitOfMeasures($pageSize, $text)
     {
         return UnitOfMeasure::where("name", "like", "%$text%")->with(["added_by", "updated_by"])
-            ->paginate($pageSize);
+            ->orderByDesc("id")->paginate($pageSize);
     }
     public function create($input)
     {

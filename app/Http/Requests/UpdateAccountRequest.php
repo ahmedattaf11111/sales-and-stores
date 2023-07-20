@@ -30,8 +30,6 @@ class UpdateAccountRequest extends FormRequest
             "is_master" => "required|boolean",
             "parent_id" => !$this->is_master ? "required" : "nullable",
             "start_balance" => "required|numeric", //If (0) balance (-) debtor (+) creditor
-            "note" => "nullable",
-            "active" => "required|boolean"
         ];
     }
 }

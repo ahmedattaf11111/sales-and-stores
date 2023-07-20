@@ -33,6 +33,7 @@ import authClient from "../../shared/http-clients/auth-client";
 import global from "../../shared/global";
 import TokenUtil from "../../shared/utils/token-util";
 import { inject, toRefs, ref } from "vue-demi";
+import Lang from "./lang.vue";
 export default {
   setup() {
     return toRefs(inject("store"));
@@ -41,6 +42,9 @@ export default {
     return {
       showMenu: false,
     };
+  },
+  components: {
+    Lang,
   },
   methods: {
     toggleMenu(event) {
@@ -69,8 +73,8 @@ export default {
 .user {
   .dropdown {
     .dropdown-menu {
-      body[dir=ltr] &{
-        left:unset !important;
+      body[dir="ltr"] & {
+        left: unset !important;
         right: 0 !important;
       }
       * {
@@ -78,7 +82,7 @@ export default {
       }
     }
     .text-container {
-      padding: 8px 15px 35px 15px;
+      padding: 8px 15px 12px 15px;
     }
     button {
       &:hover,
@@ -87,6 +91,7 @@ export default {
       }
     }
     .dropdown-item {
+      padding-top:14px;
       span {
         margin: 0 8px;
         position: relative;

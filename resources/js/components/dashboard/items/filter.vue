@@ -112,6 +112,6 @@ input,
 select,
 textarea {
   border-color: #e7e7e7 !important;
-  border-radius: 0 !important;
+  border-radius: 5px !important;
 }
 </style>

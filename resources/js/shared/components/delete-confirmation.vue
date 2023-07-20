@@ -32,7 +32,7 @@
             data-dismiss="modal"
             @click="$emit('confirm')"
             type="button"
-            class="btn btn-danger"
+            class="btn yes"
           >
             {{ $t("YES") }}
           </button>
@@ -59,6 +59,10 @@ export default {
 #deleteConfirmationModal {
   button {
     color: white;
+  }
+  .yes{
+    background: #373063 !important;
+    color: #fff;
   }
   .question-icon {
     width: 50px;

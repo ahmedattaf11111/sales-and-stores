@@ -50,8 +50,8 @@ class PurchaseInvoiceItemService
     {
         return ["is_purchase_invoice_approved" => $this->purchaseInvoiceItemRepository->isPurchaseInvoiceApproved($id)];
     }
-    public function delete($purchaseInvoiceId, $itemId)
+    public function delete($id)
     {
-        $this->purchaseInvoiceItemRepository->delete($purchaseInvoiceId, $itemId);
+        $this->purchaseInvoiceItemRepository->delete($id);
     }
 }

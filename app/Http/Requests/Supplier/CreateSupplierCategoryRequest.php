@@ -25,7 +25,6 @@ class CreateSupplierCategoryRequest extends FormRequest
     {
         return [
             "name" => "required|unique:supplier_categories",
-            "active" => "required|boolean",
         ];
     }
 }

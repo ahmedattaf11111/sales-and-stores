@@ -25,7 +25,6 @@ class CreateItemCategoryRequest extends FormRequest
     {
         return [
             "name" => "required|unique:item_categories",
-            "active" => "required|boolean",
        ];
     }
 }

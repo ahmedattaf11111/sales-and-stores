@@ -22,40 +22,41 @@
               ></button>
             </div>
             <div class="modal-body">
-              <div class="row">
-                <div class="col-lg-4 mb-3">
-                  <div class="image">
-                    <img v-if="previewImage" class="img-fluid" :src="previewImage" />
-                    <img v-else class="img-fluid" src="/assets/images/empty.jpg" />
-                    <div class="image-upload">
-                      <label class="icon" for="image">
-                        <i class="fa fa-camera"></i>
-                      </label>
-                      <label
-                        @click="deleteImage"
-                        v-if="uploadedImage"
-                        class="icon text-secondary px-2"
-                      >
-                        <i class="fa fa-window-close" aria-hidden="true"></i>
-                      </label>
-                      <input
-                        @change="uploadImage"
-                        accept="image/apng, image/avif, image/gif, image/jpeg, image/png, image/svg+xml, image/webp"
-                        type="file"
-                        id="image"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-8">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    id="profile-tab"
+                    data-toggle="tab"
+                    href="#profile"
+                    role="tab"
+                    aria-controls="profile"
+                    aria-selected="false"
+                    >{{ $t("DATA_ENTRY") }}</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="contact-tab"
+                    data-toggle="tab"
+                    href="#contact"
+                    role="tab"
+                    aria-controls="contact"
+                    aria-selected="false"
+                    >{{ $t("IMAGE_UPLOAD") }}</a
+                  >
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div
+                  class="tab-pane fade show active"
+                  id="profile"
+                  role="tabpanel"
+                  aria-labelledby="profile-tab"
+                >
                   <div class="row">
-                    <div class="active col-12">
-                      <label class="switch">
-                        <input v-model="active" type="checkbox" :checked="active" />
-                        <span class="slider round"></span>
-                      </label>
-                    </div>
-                    <div class="col-12">
+                    <div class="col-lg-3">
                       <div class="form-group">
                         <label for="exampleInputEmail1">{{ $t("NAME") }}</label>
                         <input
@@ -76,9 +77,11 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                       <div class="form-group">
-                        <label for="exampleInputEmail1">{{ $t("CATEGORY") }}</label>
+                        <label for="exampleInputEmail1">{{
+                          $t("CATEGORY")
+                        }}</label>
                         <select
                           class="form-control"
                           v-model="v$.item_category_id.$model"
@@ -95,13 +98,16 @@
                           </option>
                         </select>
                         <div class="invalid-feedback">
-                          <div v-for="error in v$.item_category_id.$errors" :key="error">
+                          <div
+                            v-for="error in v$.item_category_id.$errors"
+                            :key="error"
+                          >
                             {{ $t("CATEGORY") + " " + $t(error.$validator) }}
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                       <div class="form-group">
                         <label for="exampleInputEmail1">{{ $t("TYPE") }}</label>
                         <select
@@ -124,9 +130,11 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-lg-3">
                       <div class="form-group">
-                        <label for="exampleInputEmail1">{{ $t("MAIN_UNIT") }}</label>
+                        <label for="exampleInputEmail1">{{
+                          $t("MAIN_UNIT")
+                        }}</label>
                         <select
                           class="form-control"
                           v-model="v$.main_unit_of_measure_id.$model"
@@ -134,7 +142,10 @@
                             'is-invalid': v$.main_unit_of_measure_id.$error,
                           }"
                         >
-                          <template :key="unit.id" v-for="unit in unit_of_measures">
+                          <template
+                            :key="unit.id"
+                            v-for="unit in unit_of_measures"
+                          >
                             <option v-if="unit.is_master" :value="unit.id">
                               {{ unit.name }}
                             </option>
@@ -150,7 +161,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                       <div class="form-group">
                         <label for="exampleInputEmail1">{{
                           $t("HALF_WHOLESALE_PRICE")
@@ -160,12 +171,14 @@
                           class="form-control"
                           v-model="v$.main_unit_half_wholesale_price.$model"
                           :class="{
-                            'is-invalid': v$.main_unit_half_wholesale_price.$error,
+                            'is-invalid':
+                              v$.main_unit_half_wholesale_price.$error,
                           }"
                         />
                         <div class="invalid-feedback">
                           <div
-                            v-for="error in v$.main_unit_half_wholesale_price.$errors"
+                            v-for="error in v$.main_unit_half_wholesale_price
+                              .$errors"
                             :key="error"
                           >
                             {{
@@ -177,7 +190,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                       <div class="form-group">
                         <label for="exampleInputEmail1">{{
                           $t("WHOLESALE_PRICE")
@@ -192,7 +205,8 @@
                         />
                         <div class="invalid-feedback">
                           <div
-                            v-for="error in v$.main_unit_wholesale_price.$errors"
+                            v-for="error in v$.main_unit_wholesale_price
+                              .$errors"
                             :key="error"
                           >
                             {{
@@ -204,9 +218,11 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                       <div class="form-group">
-                        <label for="exampleInputEmail1">{{ $t("RETAIL_PRICE") }}</label>
+                        <label for="exampleInputEmail1">{{
+                          $t("RETAIL_PRICE")
+                        }}</label>
                         <input
                           type="text"
                           class="form-control"
@@ -229,35 +245,21 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-12">
-                      <div class="form-check">
-                        <input
-                          type="checkbox"
-                          v-model="has_fixed_price"
-                          class="form-check-input"
-                          id="exampleCheck1"
-                        />
-                        <label class="form-check-label" for="exampleCheck1">{{
-                          $t("HAS_FIXED_PRICE")
-                        }}</label>
-                      </div>
-                      <div class="form-check has-sub-unit">
-                        <input
-                          type="checkbox"
-                          v-model="has_sub_unit"
-                          class="form-check-input"
-                          id="exampleCheck1"
-                        />
-                        <label class="form-check-label" for="exampleCheck1">{{
-                          $t("HAS_SUB_UNIT")
-                        }}</label>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label>{{ $t("HAS_SUB_UNIT") }}</label>
+                        <select v-model="has_sub_unit" class="form-control">
+                          <option :value="true">{{ $t("YES") }}</option>
+                          <option :value="false">{{ $t("NO") }}</option>
+                        </select>
                       </div>
                     </div>
-
                     <template v-if="has_sub_unit">
-                      <div class="col-lg-6">
+                      <div class="col-lg-3">
                         <div class="form-group">
-                          <label for="exampleInputEmail1">{{ $t("SUB_UNIT") }}</label>
+                          <label for="exampleInputEmail1">{{
+                            $t("SUB_UNIT")
+                          }}</label>
                           <select
                             class="form-control"
                             v-model="v$.sub_unit_of_measure_id.$model"
@@ -265,7 +267,10 @@
                               'is-invalid': v$.sub_unit_of_measure_id.$error,
                             }"
                           >
-                            <template :key="unit.id" v-for="unit in unit_of_measures">
+                            <template
+                              :key="unit.id"
+                              v-for="unit in unit_of_measures"
+                            >
                               <option v-if="!unit.is_master" :value="unit.id">
                                 {{ unit.name }}
                               </option>
@@ -281,7 +286,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-3">
                         <div class="form-group">
                           <label for="exampleInputEmail1">{{
                             $t("SUB_TO_MAIN_QUANTITY")
@@ -308,7 +313,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4">
+                      <div class="col-lg-3">
                         <div class="form-group">
                           <label for="exampleInputEmail1">{{
                             $t("HALF_WHOLESALE_PRICE")
@@ -318,12 +323,14 @@
                             class="form-control"
                             v-model="v$.sub_unit_half_wholesale_price.$model"
                             :class="{
-                              'is-invalid': v$.sub_unit_half_wholesale_price.$error,
+                              'is-invalid':
+                                v$.sub_unit_half_wholesale_price.$error,
                             }"
                           />
                           <div class="invalid-feedback">
                             <div
-                              v-for="error in v$.sub_unit_half_wholesale_price.$errors"
+                              v-for="error in v$.sub_unit_half_wholesale_price
+                                .$errors"
                               :key="error"
                             >
                               {{
@@ -335,7 +342,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4">
+                      <div class="col-lg-3">
                         <div class="form-group">
                           <label for="exampleInputEmail1">{{
                             $t("WHOLESALE_PRICE")
@@ -350,7 +357,8 @@
                           />
                           <div class="invalid-feedback">
                             <div
-                              v-for="error in v$.sub_unit_wholesale_price.$errors"
+                              v-for="error in v$.sub_unit_wholesale_price
+                                .$errors"
                               :key="error"
                             >
                               {{
@@ -362,9 +370,11 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4">
+                      <div class="col-lg-3">
                         <div class="form-group">
-                          <label for="exampleInputEmail1">{{ $t("RETAIL_PRICE") }}</label>
+                          <label for="exampleInputEmail1">{{
+                            $t("RETAIL_PRICE")
+                          }}</label>
                           <input
                             type="text"
                             class="form-control"
@@ -390,13 +400,56 @@
                     </template>
                   </div>
                 </div>
+                <div
+                  class="tab-pane fade"
+                  id="contact"
+                  role="tabpanel"
+                  aria-labelledby="contact-tab"
+                >
+                  <div class="col-lg-4 mb-3">
+                    <div class="image">
+                      <img
+                        v-if="previewImage"
+                        class="img-fluid"
+                        :src="previewImage"
+                      />
+                      <img
+                        v-else
+                        class="img-fluid"
+                        src="/assets/images/empty.jpg"
+                      />
+                      <div class="image-upload">
+                        <label v-if="!uploadedImage" class="icon" for="image">
+                          <i class="fa fa-camera"></i>
+                        </label>
+                        <label
+                          @click="deleteImage"
+                          v-if="uploadedImage"
+                          class="icon text-secondary px-2"
+                        >
+                          <i class="fa fa-window-close" aria-hidden="true"></i>
+                        </label>
+                        <input
+                          @change="uploadImage"
+                          accept="image/apng, image/avif, image/gif, image/jpeg, image/png, image/svg+xml, image/webp"
+                          type="file"
+                          id="image"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -418,6 +471,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const item_store = inject("item_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       uploadedImage: null,
       previewImage: "",
@@ -428,7 +482,6 @@ export default {
       name: "",
       item_category_id: null,
       type: "",
-      active: true,
       has_fixed_price: true,
       main_unit_of_measure_id: null,
       main_unit_half_wholesale_price: 0,
@@ -513,7 +566,9 @@ export default {
     function deleteImage() {
       data.uploadedImage = null;
       data.previewImage =
-        props.selectedItem && props.selectedItem.image ? props.selectedItem.image : "";
+        props.selectedItem && props.selectedItem.image
+          ? props.selectedItem.image
+          : "";
     }
     function save() {
       if (v$.value.$invalid) {
@@ -534,14 +589,22 @@ export default {
       itemClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.item,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#itemFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+
           data.nameExist = error.response.data.errors.name ? true : false;
         });
     }
@@ -550,15 +613,21 @@ export default {
       itemClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.item,
-            added_by: props.selectedItem.added_by,
-            updated_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#itemFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
           data.nameExist = error.response.data.errors.name ? true : false;
         });
     }
@@ -567,7 +636,6 @@ export default {
       formData.append("name", form.name);
       formData.append("item_category_id", form.item_category_id);
       formData.append("type", form.type);
-      formData.append("active", form.active ? 1 : 0);
       formData.append("has_fixed_price", form.has_fixed_price ? 1 : 0);
       //Main unit
       formData.append("main_unit_of_measure_id", form.main_unit_of_measure_id);
@@ -575,26 +643,49 @@ export default {
         "main_unit_half_wholesale_price",
         form.main_unit_half_wholesale_price
       );
-      formData.append("main_unit_wholesale_price", form.main_unit_wholesale_price);
+      formData.append(
+        "main_unit_wholesale_price",
+        form.main_unit_wholesale_price
+      );
       formData.append("main_unit_retail_price", form.main_unit_retail_price);
       //Sub unit
       formData.append("has_sub_unit", form.has_sub_unit ? 1 : 0);
       appendField(formData, "sub_to_main_quantity", form.sub_to_main_quantity);
-      appendField(formData, "sub_unit_of_measure_id", form.sub_unit_of_measure_id);
-      appendField(formData, "sub_unit_of_measure_id", form.sub_unit_of_measure_id);
+      appendField(
+        formData,
+        "sub_unit_of_measure_id",
+        form.sub_unit_of_measure_id
+      );
+      appendField(
+        formData,
+        "sub_unit_of_measure_id",
+        form.sub_unit_of_measure_id
+      );
       appendField(
         formData,
         "sub_unit_half_wholesale_price",
         form.sub_unit_half_wholesale_price
       );
-      appendField(formData, "sub_unit_wholesale_price", form.sub_unit_wholesale_price);
-      appendField(formData, "sub_unit_retail_price", form.sub_unit_retail_price);
-      appendField(formData, "id", props.selectedItem ? props.selectedItem.id : null);
+      appendField(
+        formData,
+        "sub_unit_wholesale_price",
+        form.sub_unit_wholesale_price
+      );
+      appendField(
+        formData,
+        "sub_unit_retail_price",
+        form.sub_unit_retail_price
+      );
+      appendField(
+        formData,
+        "id",
+        props.selectedItem ? props.selectedItem.id : null
+      );
       appendField(formData, "image", data.uploadedImage);
       return formData;
     }
     function appendField(formData, fieldName, fieldValue) {
-      if (fieldValue) {
+      if (fieldValue || fieldValue == 0) {
         formData.append(fieldName, fieldValue);
       }
     }
@@ -606,7 +697,6 @@ export default {
         ? props.selectedItem.item_category_id
         : null;
       form.type = props.selectedItem ? props.selectedItem.type : "";
-      form.active = props.selectedItem ? toBoolean(props.selectedItem.active) : true;
       form.has_fixed_price = props.selectedItem
         ? toBoolean(props.selectedItem.has_fixed_price)
         : true;
@@ -673,6 +763,25 @@ export default {
 
 <style scoped lang="scss">
 .item-form {
+  .nav-tabs {
+    border-bottom-style: none !important;
+    margin-bottom: 20px;
+    .nav-link {
+      color: #373063;
+    }
+  }
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+  }
+  .sub-unit {
+    margin-top: 33px;
+  }
+  .form-check.has-sub-unit {
+    label {
+      margin-top: 3px;
+    }
+  }
   .modal-header {
     border-color: #e9ecef !important;
   }
@@ -693,11 +802,11 @@ export default {
   input,
   select {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
   input:checked {
-    background: #6d85fb;
-    border-color: #6d85fb !important;
+    background: #373063;
+    border-color: #373063 !important;
   }
   .icons {
     i {
@@ -708,12 +817,18 @@ export default {
     }
   }
   .image {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin-top: 45px;
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+    position: relative;
     .image-upload {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
+      width: 30px;
+      position: absolute;
+      bottom: 0;
+      right: 0px;
+      background: #fff;
       i {
         margin-top: 7px;
         color: #888888;
@@ -778,10 +893,10 @@ export default {
       transition: 0.4s;
     }
     input:checked + .slider {
-      background-color: #6d85fb;
+      background-color: #373063;
     }
     input:focus + .slider {
-      box-shadow: 0 0 1px #6d85fb;
+      box-shadow: 0 0 1px #373063;
     }
     input:checked + .slider:before {
       -webkit-transform: translateX(26px);

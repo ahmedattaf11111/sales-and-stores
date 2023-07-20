@@ -9,6 +9,7 @@ class SupplierCategoryRepository
     public function getSupplierCategories($pageSize, $text)
     {
         return SupplierCategory::where("name", "like", "%$text%")->with(["added_by", "updated_by"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function create($input)

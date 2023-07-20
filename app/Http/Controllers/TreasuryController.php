@@ -12,6 +12,9 @@ class TreasuryController extends Controller
     public function __construct(TreasuryService $treasuryService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create treasury")->only("create");
+        $this->middleware("permission:super admin|update treasury")->only("update");
+        $this->middleware("permission:super admin|view treasury")->only(["index", "getAllTreasuries"]);
         $this->treasuryService = $treasuryService;
     }
     public function index()

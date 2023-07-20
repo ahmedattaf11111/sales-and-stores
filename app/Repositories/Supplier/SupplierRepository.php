@@ -20,6 +20,7 @@ class SupplierRepository
                     });
             })
             ->with(["account.updated_by", "account.added_by", "supplierCategory"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function getCategories()

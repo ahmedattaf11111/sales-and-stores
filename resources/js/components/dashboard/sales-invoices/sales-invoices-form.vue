@@ -23,10 +23,11 @@
           <div class="modal-body">
             <form enctype="multipart/form-data">
               <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label class="labels">{{ $t("INVOICE_DATE") }}</label
                     ><input
+                      :disabled="selectedSaleInvoice?.is_approved"
                       v-model="v$.invoice.date.$model"
                       :class="{
                         'is-invalid': v$.invoice.date.$error,
@@ -35,20 +36,25 @@
                       class="form-control"
                     />
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.invoice.date.$errors" :key="error">
+                      <div
+                        v-for="error in v$.invoice.date.$errors"
+                        :key="error"
+                      >
                         {{ $t("INVOICE_DATE") }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label class="labels">{{ $t("INVOICE_NUMBER") }}</label
                     ><input
+                      :disabled="selectedSaleInvoice?.is_approved"
                       v-model="v$.invoice.invoice_number.$model"
                       :class="{
                         'is-invalid':
-                          v$.invoice.invoice_number.$error || invoiceNumberExist,
+                          v$.invoice.invoice_number.$error ||
+                          invoiceNumberExist,
                       }"
                       type="text"
                       class="form-control"
@@ -59,21 +65,29 @@
                         :key="error"
                       >
                         {{
-                          $t("INVOICE_NUMBER") + " " + $t(error.$validator, { value: 0 })
+                          $t("INVOICE_NUMBER") +
+                          " " +
+                          $t(error.$validator, { value: 0 })
                         }}
                       </div>
                       <div
-                        v-if="!v$.invoice.invoice_number.$invalid && invoiceNumberExist"
+                        v-if="
+                          !v$.invoice.invoice_number.$invalid &&
+                          invoiceNumberExist
+                        "
                       >
                         {{ $t("INVOICE_NUMBER") + " " + $t("EXIST") }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("INVOICE_CATEGORY") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("INVOICE_CATEGORY")
+                    }}</label>
                     <select
+                      :disabled="selectedSaleInvoice?.is_approved"
                       class="form-control"
                       v-model="v$.invoice.invoice_category_id.$model"
                       :class="{
@@ -93,15 +107,18 @@
                         v-for="error in v$.invoice.invoice_category_id.$errors"
                         :key="error"
                       >
-                        {{ $t("INVOICE_CATEGORY") + " " + $t(error.$validator) }}
+                        {{
+                          $t("INVOICE_CATEGORY") + " " + $t(error.$validator)
+                        }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("CUSTOMER") }}</label>
                     <select
+                      :disabled="selectedSaleInvoice?.is_approved"
                       class="form-control"
                       v-model="v$.invoice.customer_id.$model"
                       :class="{
@@ -117,16 +134,20 @@
                       </option>
                     </select>
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.invoice.customer_id.$errors" :key="error">
+                      <div
+                        v-for="error in v$.invoice.customer_id.$errors"
+                        :key="error"
+                      >
                         {{ $t("CUSTOMER") + " " + $t(error.$validator) }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("DELEGATE") }}</label>
                     <select
+                      :disabled="selectedSaleInvoice?.is_approved"
                       class="form-control"
                       v-model="v$.invoice.delegate_id.$model"
                       :class="{
@@ -142,16 +163,20 @@
                       </option>
                     </select>
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.invoice.delegate_id.$errors" :key="error">
+                      <div
+                        v-for="error in v$.invoice.delegate_id.$errors"
+                        :key="error"
+                      >
                         {{ $t("DELEGATE") + " " + $t(error.$validator) }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label class="labels">{{ $t("SALE_PRICE") }}</label>
                     <select
+                      :disabled="selectedSaleInvoice?.is_approved"
                       class="form-control"
                       v-model="v$.invoice.sale_price_type.$model"
                       :class="{
@@ -160,7 +185,9 @@
                     >
                       <option value="RETAIL">{{ $t("RETAIL") }}</option>
                       <option value="WHOLESALE">{{ $t("WHOLESALE") }}</option>
-                      <option value="HALF_WHOLESALE">{{ $t("HALF_WHOLESALE") }}</option>
+                      <option value="HALF_WHOLESALE">
+                        {{ $t("HALF_WHOLESALE") }}
+                      </option>
                     </select>
                     <div class="invalid-feedback">
                       <div
@@ -179,18 +206,23 @@
               <form>
                 <!--Invoice items from-->
                 <div class="row">
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label for="exampleInputEmail1">{{ $t("STORE") }}</label>
                       <select
-                      @change="getBatches"
+                        :disabled="selectedSaleInvoice?.is_approved"
+                        @change="getBatches"
                         class="form-control"
                         v-model="v$.invoice_item.store_id.$model"
                         :class="{
                           'is-invalid': v$.invoice_item.store_id.$error,
                         }"
                       >
-                        <option v-for="store in stores" :key="store.id" :value="store.id">
+                        <option
+                          v-for="store in stores"
+                          :key="store.id"
+                          :value="store.id"
+                        >
                           {{ store.name }}
                         </option>
                       </select>
@@ -204,10 +236,12 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label for="exampleInputEmail1">{{ $t("ITEM") }}</label>
+
                       <select
+                        :disabled="selectedSaleInvoice?.is_approved"
                         @change="setSelectedItem()"
                         class="form-control"
                         v-model="v$.invoice_item.item_id.$model"
@@ -215,7 +249,11 @@
                           'is-invalid': v$.invoice_item.item_id.$error,
                         }"
                       >
-                        <option v-for="item in items" :key="item.id" :value="item.id">
+                        <option
+                          v-for="item in items"
+                          :key="item.id"
+                          :value="item.id"
+                        >
                           {{ item.name }}
                         </option>
                       </select>
@@ -229,19 +267,25 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
-                      <label for="exampleInputEmail1">{{ $t("UNIT_OF_MEASURE") }}</label>
+                      <label for="exampleInputEmail1">{{
+                        $t("UNIT_OF_MEASURE")
+                      }}</label>
                       <select
+                        :disabled="selectedSaleInvoice?.is_approved"
                         @change="setSelectedUnitOfMeasure()"
                         class="form-control"
                         v-model="v$.invoice_item.unit_of_measure_id.$model"
                         :class="{
-                          'is-invalid': v$.invoice_item.unit_of_measure_id.$error,
+                          'is-invalid':
+                            v$.invoice_item.unit_of_measure_id.$error,
                         }"
                       >
                         <option
-                          v-if="selectedItem && selectedItem.main_unit_of_measure"
+                          v-if="
+                            selectedItem && selectedItem.main_unit_of_measure
+                          "
                           :key="selectedItem.main_unit_of_measure.id"
                           :value="selectedItem.main_unit_of_measure.id"
                         >
@@ -252,29 +296,37 @@
                           }}
                         </option>
                         <option
-                          v-if="selectedItem && selectedItem.sub_unit_of_measure"
+                          v-if="
+                            selectedItem && selectedItem.sub_unit_of_measure
+                          "
                           :key="selectedItem.sub_unit_of_measure.id"
                           :value="selectedItem.sub_unit_of_measure.id"
                         >
                           {{
-                            `${selectedItem.sub_unit_of_measure.name} (${$t("SUB_UNIT")})`
+                            `${selectedItem.sub_unit_of_measure.name} (${$t(
+                              "SUB_UNIT"
+                            )})`
                           }}
                         </option>
                       </select>
                       <div class="invalid-feedback">
                         <div
-                          v-for="error in v$.invoice_item.unit_of_measure_id.$errors"
+                          v-for="error in v$.invoice_item.unit_of_measure_id
+                            .$errors"
                           :key="error"
                         >
-                          {{ $t("UNIT_OF_MEASURE") + " " + $t(error.$validator) }}
+                          {{
+                            $t("UNIT_OF_MEASURE") + " " + $t(error.$validator)
+                          }}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label class="labels">{{ $t("SALE_PRICE") }}</label>
                       <select
+                        :disabled="selectedSaleInvoice?.is_approved"
                         @change="setSalePrice()"
                         class="form-control"
                         v-model="v$.invoice_item.sale_price_type.$model"
@@ -284,11 +336,14 @@
                       >
                         <option value="RETAIL">{{ $t("RETAIL") }}</option>
                         <option value="WHOLESALE">{{ $t("WHOLESALE") }}</option>
-                        <option value="HALF_WHOLESALE">{{ $t("HALF_WHOLESALE") }}</option>
+                        <option value="HALF_WHOLESALE">
+                          {{ $t("HALF_WHOLESALE") }}
+                        </option>
                       </select>
                       <div class="invalid-feedback">
                         <div
-                          v-for="error in v$.invoice_item.sale_price_type.$errors"
+                          v-for="error in v$.invoice_item.sale_price_type
+                            .$errors"
                           :key="error"
                         >
                           {{ $t("SALE_PRICE") + " " + $t(error.$validator) }}
@@ -296,36 +351,44 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label class="labels">{{ $t("IS_SALE_NORMAL") }}</label>
                       <select
+                        :disabled="selectedSaleInvoice?.is_approved"
                         @change="setSalePrice()"
                         class="form-control"
                         v-model="v$.invoice_item.is_sale_price_normal.$model"
                         :class="{
-                          'is-invalid': v$.invoice_item.is_sale_price_normal.$error,
+                          'is-invalid':
+                            v$.invoice_item.is_sale_price_normal.$error,
                         }"
                       >
                         <option value="NORMAL">{{ $t("NORMAL") }}</option>
                         <option value="BONUS">{{ $t("BONUS") }}</option>
-                        <option value="ADVERTISING">{{ $t("ADVERTISING") }}</option>
+                        <option value="ADVERTISING">
+                          {{ $t("ADVERTISING") }}
+                        </option>
                         <option value="STALE">{{ $t("STALE") }}</option>
                       </select>
                       <div class="invalid-feedback">
                         <div
-                          v-for="error in v$.invoice_item.is_sale_price_normal.$errors"
+                          v-for="error in v$.invoice_item.is_sale_price_normal
+                            .$errors"
                           :key="error"
                         >
-                          {{ $t("IS_SALE_NORMAL") + " " + $t(error.$validator) }}
+                          {{
+                            $t("IS_SALE_NORMAL") + " " + $t(error.$validator)
+                          }}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label class="labels">{{ $t("SALE_PRICE") }}</label
                       ><input
+                        :disabled="selectedSaleInvoice?.is_approved"
                         v-model="v$.invoice_item.sale_price.$model"
                         :class="{
                           'is-invalid': v$.invoice_item.sale_price.$error,
@@ -339,16 +402,19 @@
                           :key="error"
                         >
                           {{
-                            $t("SALE_PRICE") + " " + $t(error.$validator, { value: 0 })
+                            $t("SALE_PRICE") +
+                            " " +
+                            $t(error.$validator, { value: 0 })
                           }}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label for="exampleInputEmail1">{{ $t("BATCH") }}</label>
                       <select
+                        :disabled="selectedSaleInvoice?.is_approved"
                         class="form-control"
                         v-model="v$.invoice_item.batch_id.$model"
                         :class="{
@@ -360,7 +426,11 @@
                           :key="batch.id"
                           :value="batch.id"
                         >
-                          <template v-if="batch.production_date && batch.expiration_date">
+                          <template
+                            v-if="
+                              batch.production_date && batch.expiration_date
+                            "
+                          >
                             {{
                               $t("EXPIRE_BATCH_DESCRIPTION", {
                                 quantity: getQuantity(batch),
@@ -392,10 +462,11 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label class="labels">{{ $t("RECEIVED_QUANTITY") }}</label
                       ><input
+                        :disabled="selectedSaleInvoice?.is_approved"
                         v-model="v$.invoice_item.quantity.$model"
                         :class="{
                           'is-invalid': v$.invoice_item.quantity.$error,
@@ -424,11 +495,12 @@
                       :title="$t('ADD_ITEM_TO_INVOICE')"
                     >
                       <button
+                        :disabled="selectedSaleInvoice?.is_approved"
                         type="button"
                         @click="addItemToInvoice"
-                        class="action border text-secondary"
+                        class="add-new btn"
                       >
-                        <i class="fas fa-plus"></i>
+                        {{ $t("ADD_NEW") }}
                       </button>
                     </span>
                   </div>
@@ -439,7 +511,7 @@
               <div class="table-responsive">
                 <table class="table">
                   <thead>
-                    <tr>
+                    <tr class="head">
                       <th scope="col">{{ $t("STORE") }}</th>
                       <th scope="col">{{ $t("SALE_PRICE") }}</th>
                       <th scope="col">{{ $t("ITEM") }}</th>
@@ -447,11 +519,14 @@
                       <th scope="col">{{ $t("SALE_PRICE") }}</th>
                       <th scope="col">{{ $t("RECEIVED_QUANTITY") }}</th>
                       <th scope="col">{{ $t("TOTAL_AMOUNT") }}</th>
-                      <th scope="col">{{ $t("DELETE") }}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in invoiceItems" :key="item.id">
+                    <tr
+                      class="value"
+                      v-for="(item, index) in invoiceItems"
+                      :key="item.id"
+                    >
                       <td>{{ item.store.name }}</td>
                       <td>{{ $t(item.sale_price_type) }}</td>
                       <td>{{ item.item.name }}</td>
@@ -461,10 +536,11 @@
                       <td>{{ item.total_sale_price }}</td>
                       <td>
                         <button
+                          :disabled="selectedSaleInvoice?.is_approved"
                           @click="deleteInvoiceItem(item, index)"
-                          class="border text-secondary action"
+                          class="text-danger delete-item"
                         >
-                          <i class="fa fa-trash" aria-hidden="true"></i>
+                          <i class="fa fa-minus" aria-hidden="true"></i>
                         </button>
                       </td>
                     </tr>
@@ -474,10 +550,37 @@
               <hr />
               <form>
                 <div class="row">
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">{{
+                        $t("TOTAL_AMOUNT")
+                      }}</label>
+                      <input
+                        disabled="true"
+                        :value="getTotalAmount()"
+                        type="text"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label>{{ $t("PERCENT") }}</label>
+                      <select
+                        :disabled="selectedSaleInvoice?.is_approved"
+                        v-model="is_tax_percent"
+                        class="form-control"
+                      >
+                        <option :value="true">{{ $t("YES") }}</option>
+                        <option :value="false">{{ $t("NO") }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
                     <div class="form-group">
                       <label for="exampleInputEmail1">{{ $t("TAX") }}</label>
                       <input
+                        :disabled="selectedSaleInvoice?.is_approved"
                         type="text"
                         class="form-control"
                         v-model="v$.tax.$model"
@@ -496,23 +599,41 @@
                           }}
                         </div>
                       </div>
-                      <div class="form-check mt-1">
-                        <input
-                          type="checkbox"
-                          v-model="is_tax_percent"
-                          class="form-check-input"
-                          id="exampleCheck1"
-                        />
-                        <label class="form-check-label" for="exampleCheck1">{{
-                          $t("PERCENT")
-                        }}</label>
-                      </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="col-lg-3">
                     <div class="form-group">
-                      <label for="exampleInputEmail1">{{ $t("DISCOUNT") }}</label>
+                      <label for="exampleInputEmail1">{{
+                        $t("TOTAL_AMOUNT_AFTER_TAX")
+                      }}</label>
                       <input
+                        disabled="true"
+                        :value="getTotalBeforeDiscount()"
+                        type="text"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label>{{ $t("PERCENT") }}</label>
+                      <select
+                        :disabled="selectedSaleInvoice?.is_approved"
+                        v-model="is_discount_percent"
+                        class="form-control"
+                      >
+                        <option :value="true">{{ $t("YES") }}</option>
+                        <option :value="false">{{ $t("NO") }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">{{
+                        $t("DISCOUNT")
+                      }}</label>
+                      <input
+                        :disabled="selectedSaleInvoice?.is_approved"
                         type="text"
                         class="form-control"
                         v-model="v$.discount.$model"
@@ -531,77 +652,104 @@
                           }}
                         </div>
                       </div>
-                      <div class="form-check mt-1">
-                        <input
-                          type="checkbox"
-                          v-model="is_discount_percent"
-                          class="form-check-input"
-                          id="exampleCheck1"
-                        />
-                        <label class="form-check-label" for="exampleCheck1">{{
-                          $t("PERCENT")
-                        }}</label>
-                      </div>
                     </div>
                   </div>
-                  <div class="col-12">
-                    <div class="form-check">
-                      <input
-                        type="checkbox"
-                        v-model="is_deferred"
-                        class="form-check-input"
-                        id="exampleCheck1"
-                      />
-                      <label class="form-check-label" for="exampleCheck1">{{
-                        $t("DEFERRED")
-                      }}</label>
-                    </div>
-                  </div>
-                  <div v-if="is_deferred" class="col-12 mb-2">
+                  <div class="col-lg-3">
                     <div class="form-group">
-                      <label for="exampleInputEmail1">{{ $t("PAID_AMOUNT") }}</label>
+                      <label for="exampleInputEmail1">{{
+                        $t("TOTAL_AMOUNT_AFTER_DISCOUNT")
+                      }}</label>
                       <input
+                        disabled="true"
+                        :value="getTotalAfterDiscount()"
+                        type="text"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label>{{ $t("DEFERRED") }}</label>
+                      <select
+                        :disabled="selectedSaleInvoice?.is_approved"
+                        v-model="is_deferred"
+                        class="form-control"
+                      >
+                        <option :value="true">{{ $t("YES") }}</option>
+                        <option :value="false">{{ $t("NO") }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div v-if="is_deferred" class="col-lg-3">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">{{
+                        $t("PAID_AMOUNT")
+                      }}</label>
+                      <input
+                        :disabled="selectedSaleInvoice?.is_approved"
                         type="text"
                         class="form-control"
                         v-model="v$.paid_amount.$model"
                         :class="{ 'is-invalid': v$.paid_amount.$error }"
                       />
                       <div class="invalid-feedback">
-                        <div v-for="error in v$.paid_amount.$errors" :key="error">
+                        <div
+                          v-for="error in v$.paid_amount.$errors"
+                          :key="error"
+                        >
                           {{
-                            $t("PAID_AMOUNT") + " " + $t(error.$validator, { value: 0 })
+                            $t("PAID_AMOUNT") +
+                            " " +
+                            $t(error.$validator, { value: 0 })
                           }}
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div v-if="is_deferred" class="col-lg-3">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">{{
+                        $t("REMAINING_AMOUNT")
+                      }}</label>
+                      <input
+                        :disabled="selectedSaleInvoice?.is_approved"
+                        disabled="true"
+                        :value="getTotalAfterDiscount() - paid_amount"
+                        type="text"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
                 </div>
               </form>
-              <div class="row">
-                <div class="col-lg-6">
-                  <b>{{ $t("TOTAL_AMOUNT") }}</b> :
-                  {{ getTotalAmount() }}
-                </div>
-                <div class="col-lg-6">
-                  <b>{{ $t("TOTAL_AMOUNT_BEFORE_DISCOUNT") }}</b> :
-                  {{ getTotalBeforeDiscount() }}
-                </div>
-                <div class="col-lg-6">
-                  <b>{{ $t("TOTAL_AMOUNT_AFTER_DISCOUNT") }}</b> :
-                  {{ getTotalAfterDiscount() }}
-                </div>
-                <div v-if="is_deferred" class="col-lg-6">
-                  <b>{{ $t("REMAINING_AMOUNT") }}</b> :
-                  {{ getTotalAfterDiscount() - paid_amount }}
-                </div>
-              </div>
             </template>
           </div>
           <div class="modal-footer">
-            <button @click.prevent="save" type="submit" class="btn btn-danger">
-              {{ invoiceCreated ? $t("APPROVE") : $t("SUBMIT") }}
+            <button
+              v-if="!invoiceCreated"
+              @click.prevent="save"
+              type="submit"
+              class="btn submit"
+            >
+              {{ $t("SUBMIT") }}
             </button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+
+            <button
+              v-if="
+                (invoiceCreated && !selectedSaleInvoice) ||
+                (selectedSaleInvoice && !selectedSaleInvoice.is_approved)
+              "
+              @click.prevent="save"
+              type="submit"
+              class="btn submit"
+            >
+              {{ $t("APPROVE") }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
               {{ $t("CLOSE") }}
             </button>
           </div>
@@ -623,6 +771,7 @@ export default {
     const sale_invoice_store = inject("sale_invoice_store");
     const { t, locale } = useI18n({ useScope: "global" });
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       customers: [],
       delegates: [],
@@ -736,7 +885,9 @@ export default {
         })
         .then(() => {
           props.selectedSaleInvoice.tax = form.tax;
-          props.selectedSaleInvoice.is_tax_percent = form.is_tax_percent ? 1 : 0;
+          props.selectedSaleInvoice.is_tax_percent = form.is_tax_percent
+            ? 1
+            : 0;
         });
     }
     function updateDiscount() {
@@ -752,9 +903,8 @@ export default {
         })
         .then(() => {
           props.selectedSaleInvoice.discount = form.discount;
-          props.selectedSaleInvoice.is_discount_percent = form.is_discount_percent
-            ? 1
-            : 0;
+          props.selectedSaleInvoice.is_discount_percent =
+            form.is_discount_percent ? 1 : 0;
         });
     }
     function getTotalAmount() {
@@ -814,6 +964,8 @@ export default {
       data.invoiceItems.splice(index, 1);
       saleInvoiceItemClient
         .deleteItem({
+          id: item.id,
+          total_sale_price: item.total_sale_price,
           store_id: item.store_id,
           item_id: item.item_id,
           unit_of_measure_id: item.unit_of_measure_id,
@@ -824,6 +976,10 @@ export default {
         })
         .then(() => {
           getInvoiceItems();
+          context.emit("updated");
+          data.selectedItem = null;
+          data.selectedUnitOfMeasure = null;
+          data.batches = [];
         });
     }
     function addItemToInvoice() {
@@ -832,6 +988,7 @@ export default {
         return;
       }
       saleInvoiceItemClient.addItemToInvoice(form.invoice_item).then(() => {
+        context.emit("updated");
         getInvoiceItems();
         getItems();
         //Reset form
@@ -844,6 +1001,9 @@ export default {
         form.invoice_item.quantity = 0;
         form.invoice_item.sale_price = 0;
         form.invoice_item.batch_id = null;
+        data.selectedItem = null;
+        data.selectedUnitOfMeasure = null;
+        data.batches = [];
       });
     }
     function getQuantity(batch) {
@@ -909,14 +1069,13 @@ export default {
           paid_amount: form.paid_amount,
         })
         .then((response) => {
-          toast.success(t("INVOICE_APPROVED"));
-          context.emit("updated", {
-            ...response.data.sale_invoice,
-            customer: getCustomer(),
-            invoice_category: getInvoiceCategory(),
-            added_by: data.added_by,
-            approved_by: response.data.user,
+          swal({
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("INVOICE_APPROVED"),
+            confirmButtonText: t("OK"),
           });
+          context.emit("updated");
           $("#saleInvoiceFormModal").modal("hide");
         })
         .catch((error) => {
@@ -946,15 +1105,15 @@ export default {
         .createSaleInvoice(form.invoice)
         .then((response) => {
           data.invoiceCreated = true;
-          context.emit("created", {
-            ...response.data.sale_invoice,
-            customer: getCustomer(),
-            invoice_category: getInvoiceCategory(),
-            added_by: response.data.user,
-          });
+          context.emit("created");
           form.invoice_item.sale_invoice_id = response.data.sale_invoice.id;
           data.added_by = response.data.user;
-          toast.success(t("CREATED_SUCCESSFULLY"));
+          swal({
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
+            confirmButtonText: t("OK"),
+          });
         })
         .catch((error) => {
           data.invoiceNumberExist = error.response.data.errors.invoice_number
@@ -968,7 +1127,9 @@ export default {
       data.added_by = props.selectedSaleInvoice
         ? props.selectedSaleInvoice.added_by
         : null;
-      form.invoice.date = props.selectedSaleInvoice ? props.selectedSaleInvoice.date : "";
+      form.invoice.date = props.selectedSaleInvoice
+        ? props.selectedSaleInvoice.date
+        : "";
       form.invoice.customer_id = props.selectedSaleInvoice
         ? props.selectedSaleInvoice.customer_id
         : null;
@@ -994,7 +1155,9 @@ export default {
           ? true
           : false
         : true;
-      form.discount = props.selectedSaleInvoice ? props.selectedSaleInvoice.discount : 0;
+      form.discount = props.selectedSaleInvoice
+        ? props.selectedSaleInvoice.discount
+        : 0;
       form.is_discount_percent = props.selectedSaleInvoice
         ? props.selectedSaleInvoice.is_discount_percent == 1
           ? true
@@ -1019,6 +1182,10 @@ export default {
       form.invoice_item.quantity = 0;
       form.invoice_item.sale_price = 0;
       form.invoice_item.batch_id = null;
+      data.selectedItem = null;
+      data.selectedUnitOfMeasure = null;
+      data.batches = [];
+      data.invoiceItems=[];
     }
     function getCustomer() {
       let customer = null;
@@ -1068,7 +1235,8 @@ export default {
     }
     function getSelectedUnitOfMeasure() {
       if (
-        data.selectedItem.main_unit_of_measure.id == form.invoice_item.unit_of_measure_id
+        data.selectedItem.main_unit_of_measure.id ==
+        form.invoice_item.unit_of_measure_id
       ) {
         return data.selectedItem.main_unit_of_measure;
       } else {
@@ -1125,10 +1293,61 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.delete-item:hover {
+  border: none !important;
+}
+.delete-item {
+  background: none;
+  border: none !important;
+}
+hr {
+  color: #1c3d8b !important;
+}
+.add-new {
+  margin: 19px 0 28px 0px !important;
+  border: 1px solid #d5d5d5 !important;
+  color: #373063 !important;
+}
 .modal-header {
   border-color: #e9ecef !important;
 }
-
+table {
+  .active {
+    font-weight: 300;
+    width: 85px;
+    color: #2bd27f !important;
+    background: #e7fbf0;
+    border-radius: 2px;
+    font-size: 12px !important;
+    text-align: center;
+    display: inline-block;
+    padding-top: 1px;
+  }
+  td,
+  th {
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  tr.head {
+    border: 1px solid #f9f9f9 !important;
+  }
+  tr.value td:not(.first) {
+    border-bottom: 13px solid #fff;
+  }
+  tr.value {
+    background: #f9f9f9;
+  }
+  td {
+    padding: 5px 12px !important;
+  }
+  th {
+    padding: 12px !important;
+  }
+}
+.submit {
+  background: #373063 !important;
+  color: #fff !important;
+}
 .modal-footer {
   border: none !important;
   button {
@@ -1205,7 +1424,7 @@ export default {
   }
   input,
   select {
-    border-radius: 0 !important;
+    border-radius: 5px !important;
     border-color: #e7e7e7;
   }
   .increments {

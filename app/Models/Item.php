@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
+    protected $appends = ["ar_created_at", "en_created_at","ar_updated_at","en_updated_at"];
+
     use Date, Image;
     protected $guarded = [];
+
     public function updated_by()
     {
         return $this->belongsTo(Admin::class);

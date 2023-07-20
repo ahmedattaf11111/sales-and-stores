@@ -2,7 +2,7 @@
   <div class="purchase-invoice-item-form">
     <div
       class="modal fade"
-      id="purchaseReturnInvoiceItemFormModal"
+      id="purchaseInvoiceItemFormModal"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -12,7 +12,7 @@
           <form @submit.prevent="save" enctype="multipart/form-data">
             <div class="modal-header">
               <h5 class="modal-title text-secondary" id="exampleModalLabel">
-                {{ $t("PURCHASE_INVOICE_ITEMS") }}
+                {{ $t("RETURNS_INVOICE_ITEMS") }}
               </h5>
               <button
                 type="button"
@@ -23,7 +23,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("ITEM") }}</label>
                     <select
@@ -34,7 +34,11 @@
                         'is-invalid': v$.item_id.$error,
                       }"
                     >
-                      <option v-for="item in items" :key="item.id" :value="item.id">
+                      <option
+                        v-for="item in items"
+                        :key="item.id"
+                        :value="item.id"
+                      >
                         {{ item.name }}
                       </option>
                     </select>
@@ -45,9 +49,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("UNIT_OF_MEASURE") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("UNIT_OF_MEASURE")
+                    }}</label>
                     <select
                       @change="setSelectedUnitOfMeasure"
                       class="form-control"
@@ -62,7 +68,9 @@
                         :value="selectedItem.main_unit_of_measure.id"
                       >
                         {{
-                          `${selectedItem.main_unit_of_measure.name} (${$t("MAIN_UNIT")})`
+                          `${selectedItem.main_unit_of_measure.name} (${$t(
+                            "MAIN_UNIT"
+                          )})`
                         }}
                       </option>
                       <option
@@ -71,18 +79,23 @@
                         :value="selectedItem.sub_unit_of_measure.id"
                       >
                         {{
-                          `${selectedItem.sub_unit_of_measure.name} (${$t("SUB_UNIT")})`
+                          `${selectedItem.sub_unit_of_measure.name} (${$t(
+                            "SUB_UNIT"
+                          )})`
                         }}
                       </option>
                     </select>
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.unit_of_measure_id.$errors" :key="error">
+                      <div
+                        v-for="error in v$.unit_of_measure_id.$errors"
+                        :key="error"
+                      >
                         {{ $t("UNIT_OF_MEASURE") + " " + $t(error.$validator) }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("BATCH") }}</label>
                     <select
@@ -98,7 +111,11 @@
                           :key="batch.id"
                           :value="batch.id"
                         >
-                          <template v-if="batch.production_date && batch.expiration_date">
+                          <template
+                            v-if="
+                              batch.production_date && batch.expiration_date
+                            "
+                          >
                             {{
                               $t("EXPIRE_BATCH_DESCRIPTION", {
                                 quantity: getQuantity(batch),
@@ -128,9 +145,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("RECEIVED_QUANTITY") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("RECEIVED_QUANTITY")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -150,9 +169,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("PRICE_UNIT") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("PRICE_UNIT")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -162,8 +183,15 @@
                       }"
                     />
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.purchase_price.$errors" :key="error">
-                        {{ $t("PRICE_UNIT") + " " + $t(error.$validator, { value: 0 }) }}
+                      <div
+                        v-for="error in v$.purchase_price.$errors"
+                        :key="error"
+                      >
+                        {{
+                          $t("PRICE_UNIT") +
+                          " " +
+                          $t(error.$validator, { value: 0 })
+                        }}
                       </div>
                     </div>
                   </div>
@@ -171,10 +199,14 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -238,7 +270,9 @@ export default {
     }
     function getSelectedUnitOfMeasure() {
       if (!data.selectedItem) return;
-      if (data.selectedItem.main_unit_of_measure.id == form.unit_of_measure_id) {
+      if (
+        data.selectedItem.main_unit_of_measure.id == form.unit_of_measure_id
+      ) {
         return data.selectedItem.main_unit_of_measure;
       } else {
         return data.selectedItem.sub_unit_of_measure;
@@ -277,15 +311,22 @@ export default {
       purchaseInvoiceItemClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.purchase_invoice_item,
-            item: data.selectedItem,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
-          $("#purchaseReturnInvoiceItemFormModal").modal("hide");
+          context.emit("created");
+
+          $("#purchaseInvoiceItemFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function update() {
       purchaseInvoiceItemClient
@@ -298,7 +339,7 @@ export default {
             added_by: props.selectedPurchaseInvoiceItem.added_by,
             updated_by: response.data.user,
           });
-          $("#purchaseReturnInvoiceItemFormModal").modal("hide");
+          $("#purchaseInvoiceItemFormModal").modal("hide");
         })
         .catch((error) => {});
     }
@@ -373,6 +414,10 @@ export default {
 
 <style scoped lang="scss">
 .purchase-invoice-item-form {
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+  }
   .modal-header {
     border-color: #e9ecef !important;
   }
@@ -446,7 +491,7 @@ export default {
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
   .modal-footer {
     button {

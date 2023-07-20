@@ -18,6 +18,14 @@ class PurchaseReturnInvoiceController extends Controller
     public function __construct(PurchaseReturnInvoiceService $purchaseReturnInvoiceService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create purchase_return_invoice")->only("create");
+        $this->middleware("permission:super admin|update purchase_return_invoice")->only("update");
+        $this->middleware("permission:super admin|approve purchase_return_invoice")->only("approve");
+        $this->middleware("permission:super admin|delete purchase_return_invoice")->only("delete");
+        $this->middleware("permission:super admin|view purchase_return_invoice")->only([
+            "index", "getStores",
+            "getSuppliers", "getCurrentShift"
+        ]);
         $this->purchaseReturnInvoiceService = $purchaseReturnInvoiceService;
     }
     public function index()
@@ -54,7 +62,7 @@ class PurchaseReturnInvoiceController extends Controller
     public function delete($id)
     {
         $items = PurchaseInvoiceItem::where("purchase_invoice_id", $id)->get();
-        foreach($items as $item){   
+        foreach ($items as $item) {
             $this->increaseBatch($item);
         }
         $this->purchaseReturnInvoiceService->delete($id);

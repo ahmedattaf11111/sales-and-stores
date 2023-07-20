@@ -29,8 +29,6 @@ class CreateSupplierRequest extends FormRequest
             "address" => "required",
             "phone" => 'required|regex:/^01[0125][0-9]{8}$/',
             "supplier_category_id" => "required",
-            "note" => "nullable",
-            "active" => "required|boolean"
         ];
     }
 }

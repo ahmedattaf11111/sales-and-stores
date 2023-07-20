@@ -23,13 +23,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="active col-12">
-                  <label class="switch">
-                    <input v-model="active" type="checkbox" :checked="active" />
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("NAME") }}</label>
                     <input
@@ -47,9 +41,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("ACCOUNT_TYPE") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("ACCOUNT_TYPE")
+                    }}</label>
                     <select
                       class="form-control"
                       v-model="v$.account_type_id.$model"
@@ -57,33 +53,61 @@
                         'is-invalid': v$.account_type_id.$error,
                       }"
                     >
-                      <option v-for="type in types" :key="type.id" :value="type.id">
+                      <option
+                        v-for="type in types"
+                        :key="type.id"
+                        :value="type.id"
+                      >
                         {{ type.name }}
                       </option>
                     </select>
                     <div class="invalid-feedback">
-                      <div v-for="error in v$.account_type_id.$errors" :key="error">
+                      <div
+                        v-for="error in v$.account_type_id.$errors"
+                        :key="error"
+                      >
                         {{ $t("ACCOUNT_TYPE") + " " + $t(error.$validator) }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="master col-12">
-                  <div class="form-check">
-                    <input
-                      type="checkbox"
-                      v-model="is_master"
-                      class="form-check-input"
-                      id="exampleCheck1"
-                    />
-                    <label class="form-check-label" for="exampleCheck1">{{
-                      $t("MASTER")
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("START_BALANCE")
                     }}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="v$.start_balance.$model"
+                      :class="{
+                        'is-invalid': v$.start_balance.$error,
+                      }"
+                    />
+                    <div class="invalid-feedback">
+                      <div
+                        v-for="error in v$.start_balance.$errors"
+                        :key="error"
+                      >
+                        {{ $t("START_BALANCE") + " " + $t(error.$validator) }}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div v-if="!is_master" class="col-12">
+                <div class="col-lg-4">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("PARENT_ACCOUNT") }}</label>
+                    <label>{{ $t("MASTER") }}</label>
+                    <select v-model="is_master" class="form-control">
+                      <option :value="true">{{ $t("YES") }}</option>
+                      <option :value="false">{{ $t("NO") }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div v-if="!is_master" class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("PARENT_ACCOUNT")
+                    }}</label>
                     <select
                       class="form-control"
                       v-model="v$.parent_id.$model"
@@ -106,37 +130,17 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("START_BALANCE") }}</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="v$.start_balance.$model"
-                      :class="{
-                        'is-invalid': v$.start_balance.$error,
-                      }"
-                    />
-                    <div class="invalid-feedback">
-                      <div v-for="error in v$.start_balance.$errors" :key="error">
-                        {{ $t("START_BALANCE") + " " + $t(error.$validator) }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("NOTE") }}</label>
-                    <textarea rows="3" class="form-control" v-model="note"> </textarea>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -158,6 +162,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const account_store = inject("account_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       allAccounts: [],
       types: [],
@@ -165,9 +170,7 @@ export default {
     const form = reactive({
       name: "",
       account_type_id: null,
-      active: true,
       parent_id: null,
-      note: "",
       start_balance: 0,
       is_master: true,
     });
@@ -183,11 +186,7 @@ export default {
       },
     };
     const v$ = useVuelidate(rules, form);
-    onMounted(() => {
-      accountClient.getAllAccounts().then((response) => {
-        data.allAccounts = response.data;
-      });
-    });
+    onMounted(() => {});
     //Methods
     function save() {
       if (v$.value.$invalid) {
@@ -205,28 +204,41 @@ export default {
       accountClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.account,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#accountFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function update() {
       accountClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.account,
-            added_by: props.selectedAccount.added_by,
-            updated_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#accountFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function getForm() {
       return {
@@ -236,25 +248,26 @@ export default {
         is_master: form.is_master,
         parent_id: form.parent_id,
         start_balance: form.start_balance,
-        note: form.note,
-        active: form.active,
       };
     }
     function setForm() {
       v$.value.$reset();
+      accountClient.getAllAccounts().then((response) => {
+        data.allAccounts = response.data;
+      });
       form.name = props.selectedAccount ? props.selectedAccount.name : "";
       form.account_type_id = props.selectedAccount
         ? props.selectedAccount.account_type_id
         : null;
-      form.active = props.selectedAccount ? Boolean(props.selectedAccount.active) : true;
       form.is_master = props.selectedAccount
         ? Boolean(props.selectedAccount.is_master)
         : true;
-      form.parent_id = props.selectedAccount ? props.selectedAccount.parent_id : null;
+      form.parent_id = props.selectedAccount
+        ? props.selectedAccount.parent_id
+        : null;
       form.start_balance = props.selectedAccount
         ? props.selectedAccount.start_balance
         : 0;
-      form.note = props.selectedAccount ? props.selectedAccount.note : "";
     }
     //Watchers
     watch(
@@ -280,6 +293,16 @@ export default {
 
 <style scoped lang="scss">
 .account-form {
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+  }
+  .master {
+    .form-check-label {
+      position: relative;
+      top: 0px;
+    }
+  }
   .modal-header {
     border-color: #e9ecef !important;
   }
@@ -297,15 +320,15 @@ export default {
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
   .active {
     display: flex;
     justify-content: flex-end;
   }
   input:checked {
-    background: #6d85fb;
-    border-color: #6d85fb !important;
+    background: #373063;
+    border-color: #373063 !important;
   }
   .form-check-label {
     position: relative;
@@ -344,10 +367,10 @@ export default {
       transition: 0.4s;
     }
     input:checked + .slider {
-      background-color: #6d85fb;
+      background-color: #373063;
     }
     input:focus + .slider {
-      box-shadow: 0 0 1px #6d85fb;
+      box-shadow: 0 0 1px #373063;
     }
     input:checked + .slider:before {
       -webkit-transform: translateX(26px);
@@ -377,10 +400,6 @@ export default {
   }
   hr {
     color: gray;
-  }
-  .master {
-    margin-top: 4px;
-    margin-bottom: -8px;
   }
 }
 </style>

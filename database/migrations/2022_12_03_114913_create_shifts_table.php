@@ -18,6 +18,7 @@ class CreateShiftsTable extends Migration
             $table->foreignId("treasury_id")->nullable()->constrained("treasuries");
             $table->foreignId("admin_id")->nullable()->constrained("admins");
             $table->boolean("is_finished")->default(0);
+            $table->timestamp("closed_at")->nullable();
             $table->timestamps();
         });
     }

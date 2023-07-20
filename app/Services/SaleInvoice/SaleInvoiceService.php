@@ -2,6 +2,7 @@
 
 namespace App\Services\SaleInvoice;
 
+use App\Commons\Consts\SaleInvoiceType;
 use App\Commons\Consts\TreasuryTransactionType;
 use App\Repositories\SaleInvoice\SaleInvoiceRepository;
 use App\Services\Commons\TransactionCommonService;
@@ -43,12 +44,14 @@ class SaleInvoiceService
     public function createSaleInvoice($input, $user)
     {
         $input["added_by_id"] = $user->id;
+        $input["type"] = SaleInvoiceType::SALE;
         return [
             "user" => $user,
             "sale_invoice" => $this->saleInvoiceRepository->createSaleInvoice($input),
         ];
     }
-    public function delete($id){
+    public function delete($id)
+    {
         $this->saleInvoiceRepository->delete($id);
     }
     public function update($input, $user)
@@ -90,13 +93,13 @@ class SaleInvoiceService
     private function getTaxValue($input)
     {
         return $input["is_tax_percent"]
-            ? ($input["tax"]/ 100.00) * $input["total_sale_price"]
+            ? ($input["tax"] / 100.00) * $input["total_sale_price"]
             : $input["tax"];
     }
     private function getDiscountValue($input)
     {
         return $input["is_discount_percent"]
-            ? ($input["discount"]/ 100.00) * $input["total_sale_price"]
+            ? ($input["discount"] / 100.00) * $input["total_sale_price"]
             : $input["discount"];
     }
 }

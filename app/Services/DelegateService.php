@@ -47,8 +47,6 @@ class DelegateService
         return [
             $action == "create" ? "added_by_id" : "updated_by_id" => $user->id,
             "name" => $input["name"],
-            "note" => isset($input["note"]) ? $input["note"] : "",
-            "active" => $input["active"],
             "account_type_id" => 2, //Client type
             "is_master" => 0,
             "parent_id" => $delegateParentAccountId,

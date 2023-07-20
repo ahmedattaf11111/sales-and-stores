@@ -31,7 +31,6 @@ class UpdateItemRequest extends FormRequest
             "item_category_id" => "required",
             "type" => "required|in:" . ItemType::ALL,
             "has_fixed_price" => "required|boolean",
-            "active" => "required|boolean",
             "main_unit_of_measure_id" => "required",
             "main_unit_half_wholesale_price" => "required|numeric|min:0",
             "main_unit_wholesale_price" => "required|numeric|min:0",

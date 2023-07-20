@@ -27,7 +27,6 @@ class UpdateUnitOfMeasureRequest extends FormRequest
             "id" => "required",
             "name" => "required|unique:unit_of_measures,name," . $this->id,
             "is_master" => "required|boolean",
-            "active" => "required|boolean",
         ];
     }
 }

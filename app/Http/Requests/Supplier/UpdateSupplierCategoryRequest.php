@@ -26,7 +26,6 @@ class UpdateSupplierCategoryRequest extends FormRequest
         return [
             "id" => "required",
             "name" => "required|unique:supplier_categories,name," . $this->id,
-            "active" => "required|boolean",
         ];
     }
 }

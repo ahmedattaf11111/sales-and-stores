@@ -28,8 +28,6 @@ class CreateCustomerRequest extends FormRequest
             "start_balance" => "required|numeric", //If (0) balance (-) debtor (+) creditor
             "address"=>"required",
             "phone" => 'required|regex:/^01[0125][0-9]{8}$/',
-            "note" => "nullable",
-            "active" => "required|boolean"
         ];
     }
 }

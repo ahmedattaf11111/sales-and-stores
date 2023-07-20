@@ -26,7 +26,6 @@ class CreateUnitOfMeasureRequest extends FormRequest
         return [
             "name" => "required|unique:unit_of_measures",
             "is_master" => "required|boolean",
-            "active" => "required|boolean",
         ];
     }
 }

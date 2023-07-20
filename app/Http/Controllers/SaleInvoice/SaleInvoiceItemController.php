@@ -15,6 +15,9 @@ class SaleInvoiceItemController extends Controller
     {
         $this->middleware("auth:admin");
         $this->saleInvoiceItemService = $saleInvoiceItemService;
+        $this->middleware("permission:super admin|create sale_invoice")->only("create");
+        $this->middleware("permission:super admin|delete sale_invoice")->only("deleteItem");
+        $this->middleware("permission:super admin|view sale_invoice")->only(["getInvoiceItems","getBatches"]);
     }
 
     public function create(CreateSaleInvoiceItemRequest $request)

@@ -17,6 +17,11 @@ class SaleInvoiceController extends Controller
     {
         $this->middleware("auth:admin");
         $this->saleInvoiceService = $saleInvoiceService;
+        $this->middleware("permission:super admin|create sale_invoice")->only("createSaleInvoice");
+        $this->middleware("permission:super admin|update sale_invoice")->only("update");
+        $this->middleware("permission:super admin|delete sale_invoice")->only("delete");
+        $this->middleware("permission:super admin|view sale_invoice")->only(["index","getCustomers","getDelegates",
+    "getItems","getStores","getInvoiceCategories"]);
     }
 
     public function index()

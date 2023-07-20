@@ -26,7 +26,8 @@ class PurchaseReturnInvoiceRepository
                 $query->where("supplier_id", $supplierId);
             })
             ->where("type", PurchaseInvoiceType::RETURN_ON_GENERAL)
-            ->with(["updated_by", "added_by", "approved_by"])
+            ->with(["updated_by", "added_by", "approved_by","supplier.account","store"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function getStores()

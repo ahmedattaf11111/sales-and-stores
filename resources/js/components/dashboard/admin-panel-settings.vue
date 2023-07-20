@@ -1,20 +1,9 @@
 <template>
   <div class="admin-panel-settings-container">
-    <div class="header">
-      <h2 class="welcome">
-        <b>{{ $t("HELLO") }}</b
-        >, {{ $t("WELCOME_HERE") }}
-      </h2>
-      <div class="title">
-        <router-link to="/admin-panel-settings">{{ $t("HOME") }}</router-link>
-        /
-        <span>{{ $t("GENERAL_SETTINGS") }}</span>
-      </div>
-    </div>
     <div class="form-container mb-5 px-4">
       <form enctype="multipart/form-data" @submit.prevent="update">
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-lg-4">
             <div class="image-container">
               <img v-if="previewImage" class="img-fluid" :src="previewImage" />
               <img class="img-fluid" v-else src="/assets/images/empty.jpg" />
@@ -25,7 +14,7 @@
                   type="file"
                   @change="uploadImage"
                 />
-                <label class="icon" for="file">
+                <label v-if="!uploadedImage" class="icon" for="file">
                   <i class="fas fa-camera text-secondary"></i>
                 </label>
                 <label
@@ -45,9 +34,9 @@
               }}
             </div>
           </div>
-          <div class="col-md-8">
+          <div class="col-lg-8">
             <div class="row">
-              <div class="col-12">
+              <div class="col-lg-6 mt-2">
                 <label class="labels">{{ $t("SYSTEM_NAME") }}</label
                 ><input
                   v-model="v$.system_name.$model"
@@ -88,7 +77,11 @@
                       v-for="error in v$.customer_parent_account_id.$errors"
                       :key="error"
                     >
-                      {{ $t("CUSTOMER_PARENT_ACCOUNT") + " " + $t(error.$validator) }}
+                      {{
+                        $t("CUSTOMER_PARENT_ACCOUNT") +
+                        " " +
+                        $t(error.$validator)
+                      }}
                     </div>
                   </div>
                 </div>
@@ -118,7 +111,11 @@
                       v-for="error in v$.supplier_parent_account_id.$errors"
                       :key="error"
                     >
-                      {{ $t("SUPPLIER_PARENT_ACCOUNT") + " " + $t(error.$validator) }}
+                      {{
+                        $t("SUPPLIER_PARENT_ACCOUNT") +
+                        " " +
+                        $t(error.$validator)
+                      }}
                     </div>
                   </div>
                 </div>
@@ -148,7 +145,11 @@
                       v-for="error in v$.delegate_parent_account_id.$errors"
                       :key="error"
                     >
-                      {{ $t("SUPPLIER_PARENT_ACCOUNT") + " " + $t(error.$validator) }}
+                      {{
+                        $t("SUPPLIER_PARENT_ACCOUNT") +
+                        " " +
+                        $t(error.$validator)
+                      }}
                     </div>
                   </div>
                 </div>
@@ -191,13 +192,17 @@
                   v-model="general_alert"
                   type="text"
                   class="form-control"
-                  rows="4"
+                  rows="7"
                 >
                 </textarea>
               </div>
             </div>
             <div class="mt-3">
-              <button class="btn btn-danger" type="submit">
+              <button
+                :disabled="!hasPermission('update general_setting')"
+                class="btn submit"
+                type="submit"
+              >
                 {{ $t("SUBMIT") }}
               </button>
             </div>
@@ -209,6 +214,7 @@
 </template>
 
 <script>
+import authClient from "../../shared/http-clients/auth-client";
 import phoneValidator from "../../shared/validators/phone-validator";
 import useVuelidate from "@vuelidate/core";
 import adminPanelSettingClient from "../../shared/http-clients/admin-panel-settings-client";
@@ -219,6 +225,7 @@ export default {
   },
   data() {
     return {
+      currentPermissions: [],
       previewImage: "",
       system_name: "",
       phone: "",
@@ -235,6 +242,12 @@ export default {
     };
   },
   methods: {
+    hasPermission(permission) {
+      let filterResult = this.currentPermissions.filter(
+        (perm) => perm.name == permission || perm.name == "super admin"
+      );
+      return filterResult.length > 0 ? true : false;
+    },
     uploadImage(e) {
       const image = e.target.files[0];
       this.uploadedImage = image;
@@ -263,6 +276,11 @@ export default {
           this.oldImage = response.data.admin_panel_settings.image;
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+
           console.log(error.response);
         });
     },
@@ -272,9 +290,18 @@ export default {
       formData.append("system_name", this.system_name);
       formData.append("phone", this.phone);
       formData.append("address", this.address);
-      formData.append("customer_parent_account_id", this.customer_parent_account_id);
-      formData.append("supplier_parent_account_id", this.supplier_parent_account_id);
-      formData.append("delegate_parent_account_id", this.delegate_parent_account_id);
+      formData.append(
+        "customer_parent_account_id",
+        this.customer_parent_account_id
+      );
+      formData.append(
+        "supplier_parent_account_id",
+        this.supplier_parent_account_id
+      );
+      formData.append(
+        "delegate_parent_account_id",
+        this.delegate_parent_account_id
+      );
       this.appendField(formData, "general_alert", this.general_alert);
       this.appendField(formData, "image", this.uploadedImage);
       return formData;
@@ -289,9 +316,12 @@ export default {
         .getAdminPanelSettings()
         .then((response) => {
           this.system_name = response.data.system_name;
-          this.customer_parent_account_id = response.data.customer_parent_account_id;
-          this.supplier_parent_account_id = response.data.supplier_parent_account_id;
-          this.delegate_parent_account_id = response.data.delegate_parent_account_id;
+          this.customer_parent_account_id =
+            response.data.customer_parent_account_id;
+          this.supplier_parent_account_id =
+            response.data.supplier_parent_account_id;
+          this.delegate_parent_account_id =
+            response.data.delegate_parent_account_id;
           this.phone = response.data.phone;
           this.address = response.data.address;
           this.general_alert = response.data.general_alert;
@@ -317,6 +347,9 @@ export default {
     adminPanelSettingClient.getGeneralAccounts().then((response) => {
       this.accounts = response.data;
     });
+    authClient.currentPermissions().then((res) => {
+      this.currentPermissions = res.data;
+    });
   },
   inject: ["store"],
 };
@@ -324,15 +357,15 @@ export default {
 
 <style scoped lang="scss">
 .admin-panel-settings-container {
+  padding: 30px 0;
   .image-container {
     margin-top: 10px;
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+    position: relative;
   }
   .form-container {
     padding: 0 10px;
     form {
       background: #ffffff;
-      box-shadow: 0 5px 20px rgb(0 0 0 / 10%);
       padding: 30px;
     }
   }
@@ -351,6 +384,9 @@ export default {
       padding-top: 9px;
     }
     .title {
+      width: 100%;
+      // display: flex !important;
+      justify-content: flex-end !important;
       * {
         color: #6c757d !important;
       }
@@ -364,8 +400,15 @@ export default {
     }
   }
   .image-upload {
-    display: flex;
+    position: absolute;
+    right: 0;
+    bottom: -5px;
+    background: #fff;
+    width: 30px;
+    height: 32px;
     justify-content: center;
+    align-items: center;
+    display: flex;
     input[type="file"] {
       display: none;
     }
@@ -385,6 +428,11 @@ export default {
     background: none;
     border-radius: 0;
     border-color: #e7e7e7;
+  }
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+    width: 100px;
   }
 }
 </style>

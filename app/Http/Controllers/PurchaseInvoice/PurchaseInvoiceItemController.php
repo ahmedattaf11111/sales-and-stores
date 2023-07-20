@@ -13,6 +13,13 @@ class PurchaseInvoiceItemController extends Controller
     public function __construct(PurchaseInvoiceItemService $purchaseInvoiceItemService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create purchase_invoice")->only("create");
+        $this->middleware("permission:super admin|update purchase_invoice")->only("update");
+        $this->middleware("permission:super admin|delete purchase_invoice")->only("delete");
+        $this->middleware("permission:super admin|view purchase_invoice")->only([
+            "index", "isPurchaseInvoiceApproved",
+            "getItems"
+        ]);
         $this->purchaseInvoiceItemService = $purchaseInvoiceItemService;
     }
     public function index($purchaseInvoiceId)
@@ -37,11 +44,12 @@ class PurchaseInvoiceItemController extends Controller
         $user = $request->user();
         return $this->purchaseInvoiceItemService->update($user, $request->validated());
     }
-    public function delete($purchaseInvoiceId, $itemId)
+    public function delete($id)
     {
-        $this->purchaseInvoiceItemService->delete($purchaseInvoiceId, $itemId);
+        $this->purchaseInvoiceItemService->delete($id);
     }
-    public function isPurchaseInvoiceApproved($id){
+    public function isPurchaseInvoiceApproved($id)
+    {
         return $this->purchaseInvoiceItemService->isPurchseInvoiceApproved($id);
     }
 }

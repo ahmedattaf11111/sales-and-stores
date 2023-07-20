@@ -7,10 +7,10 @@ export default {
         localStorage.setItem(this.key, lang);
     },
     get() {
-        return localStorage.getItem(this.key) ? localStorage.getItem(this.key) : "en";
+        return localStorage.getItem(this.key) ? localStorage.getItem(this.key) : "ar";
     },
     isRtl() {
-        var lang = localStorage.getItem(this.key) ? localStorage.getItem(this.key) : "en";
+        var lang = localStorage.getItem(this.key) ? localStorage.getItem(this.key) : "ar";
         return lang == "ar";
     },
     isArabic() {

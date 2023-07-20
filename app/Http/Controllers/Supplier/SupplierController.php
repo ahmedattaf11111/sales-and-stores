@@ -13,6 +13,10 @@ class SupplierController extends Controller
     public function __construct(SupplierService $supplierService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create supplier_account")->only("create");
+        $this->middleware("permission:super admin|update supplier_account")->only("update");
+        $this->middleware("permission:super admin|view supplier_account")->only(["index", "getCategories"]);
+
         $this->supplierService = $supplierService;
     }
     public function index()
@@ -22,7 +26,8 @@ class SupplierController extends Controller
             request()->text,
         );
     }
-    public function getCategories(){
+    public function getCategories()
+    {
         return $this->supplierService->getCategories();
     }
     public function create(CreateSupplierRequest $request)

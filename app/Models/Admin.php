@@ -7,12 +7,14 @@ use App\Commons\Traits\JwtAuth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Admin extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, Notifiable, JwtAuth,Date;
+    use HasApiTokens, Notifiable, JwtAuth,Date,HasRoles;
     protected $guarded = [];
+    protected $appends = ["ar_created_at", "en_created_at","ar_updated_at","en_updated_at"];	
     protected $hidden = [
         'password',
     ];

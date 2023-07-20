@@ -28,8 +28,6 @@ class CreateDelegateRequest extends FormRequest
             "start_balance" => "required|numeric", //If (0) balance (-) debtor (+) creditor
             "address"=>"required",
             "phone" => 'required|regex:/^01[0125][0-9]{8}$/',
-            "note" => "nullable",
-            "active" => "required|boolean",
             "percent_type"=>"required|boolean",
             "percent_collect_commission" => "required|numeric|min:0" . $this->percent_type ? "|max:100" : "",
             "percent_sales_retail_commission" => "required|numeric|min:0" . $this->percent_type ? "|max:100" : "",

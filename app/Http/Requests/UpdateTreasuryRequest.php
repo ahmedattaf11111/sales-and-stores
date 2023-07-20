@@ -29,12 +29,6 @@ class UpdateTreasuryRequest extends FormRequest
             "name" => "required|unique:treasuries,name," . $this->id,
             "last_collection_receipt" => "required|numeric|min:0",
             "last_exchange_receipt" => "required|numeric|min:0",
-            "active" => "required|boolean",
-            "is_master" => ["required", "boolean", Rule::unique('treasuries')->where(function ($query) {
-                return $query->where('is_master', 1);
-            })->ignore($this->id, 'id')],
-            "treasuries_ids" => "array",
-            "treasuries_ids.*" => "required|numeric",
         ];
     }
 }

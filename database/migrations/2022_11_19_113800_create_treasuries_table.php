@@ -18,7 +18,6 @@ class CreateTreasuriesTable extends Migration
             $table->string("name")->nullable();
             $table->integer("last_collection_receipt")->default(0);
             $table->integer("last_exchange_receipt")->default(0);
-            $table->boolean("is_master")->default(0);
             $table->foreignId("added_by_id")->nullable()->constrained("admins");
             $table->foreignId("updated_by_id")->nullable()->constrained("admins");
             $table->boolean("active")->default(1);

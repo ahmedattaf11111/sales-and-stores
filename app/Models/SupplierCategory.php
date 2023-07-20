@@ -9,6 +9,7 @@ class SupplierCategory extends Model
 {
     use Date;
     protected $guarded = [];
+    protected $appends = ["ar_created_at", "en_created_at", "ar_updated_at", "en_updated_at"];
     public function updated_by()
     {
         return $this->belongsTo(Admin::class);

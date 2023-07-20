@@ -26,7 +26,6 @@ class UpdateInvoiceCategoryRequest extends FormRequest
         return [
             "id" => "required",
             "name" => "required|unique:invoice_categories,name," . $this->id,
-            "active" => "required|boolean",
         ];
     }
 }

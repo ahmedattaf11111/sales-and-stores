@@ -27,7 +27,7 @@ class CreatePurchaseReturnInvoiceRequest extends FormRequest
             "date" => "required|date",
             "supplier_id" => "required|numeric",
             "store_id" => "required|numeric",
-            "note" => "nullable"
+            "invoice_number" => "required|unique:purchase_invoices",
         ];
     }
 }

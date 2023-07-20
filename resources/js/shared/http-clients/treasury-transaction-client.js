@@ -1,7 +1,7 @@
 const BASE_URL = `treasury-transactions`;
 export default {
-    getTreasuryTransactions(page, pageSize, type) {
-        return axios.get(`${BASE_URL}?page=${page}&page_size=${pageSize}&type=${type}`);
+    getTreasuryTransactions(page, pageSize, type,text) {
+        return axios.get(`${BASE_URL}?page=${page}&page_size=${pageSize}&type=${type}&text=${text}`);
     },
     getAccounts() {
         return axios.get(`${BASE_URL}/accounts`);

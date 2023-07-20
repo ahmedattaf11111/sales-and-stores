@@ -47,6 +47,7 @@ class RouteServiceProvider extends ServiceProvider
         "shift" => self::DEF_NAMESPACE,
         "treasury-transaction" => self::DEF_NAMESPACE,
         "sale-invoice" => self::DEF_NAMESPACE. "\\SaleInvoice",
+        "reports" => self::DEF_NAMESPACE. "\\Reports",
     ];
     /**
      * Define your route model bindings, pattern filters, etc.

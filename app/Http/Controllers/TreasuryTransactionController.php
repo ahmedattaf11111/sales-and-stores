@@ -11,6 +11,10 @@ class TreasuryTransactionController extends Controller
     public function __construct(TreasuryTransactionService $treasuryTransactionService)
     {
         $this->treasuryTransactionService = $treasuryTransactionService;
+        $this->middleware("permission:super admin|create collect_exchange_money")->only("create");
+        $this->middleware("permission:super admin|view collect_exchange_money")->only(["index","getAccounts"
+        ,"getGeneralInfo"]);
+
         $this->middleware("auth:admin");
     }
 
@@ -18,7 +22,8 @@ class TreasuryTransactionController extends Controller
     {
         return  $this->treasuryTransactionService->getTreasuryTransactions(
             request()->page_size,
-            request()->type
+            request()->type,
+            request()->text,
         );
     }
     public function getAccounts()

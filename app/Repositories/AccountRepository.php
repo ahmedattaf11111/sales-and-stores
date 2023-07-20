@@ -21,8 +21,9 @@ class AccountRepository
             ->when($isMaster === "1" || $isMaster === "0", function ($query) use ($isMaster) {
                 $query->where("is_master", $isMaster);
             })
-            ->whereRelation("accountType","related_internal_account",0)
-            ->with(["added_by", "updated_by"])
+            ->whereRelation("accountType", "related_internal_account", 0)
+            ->with(["added_by", "updated_by","accountType","parent"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function getAllAccounts()

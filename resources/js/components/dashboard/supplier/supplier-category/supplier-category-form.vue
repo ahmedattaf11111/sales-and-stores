@@ -23,12 +23,6 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="active col-12">
-                  <label class="switch">
-                    <input v-model="active" type="checkbox" :checked="active" />
-                    <span class="slider round"></span>
-                  </label>
-                </div>
                 <div class="col-12 mb-2">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("NAME") }}</label>
@@ -53,10 +47,14 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -78,12 +76,12 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const supplier_category_store = inject("supplier_category_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       nameExist: false,
     });
     const form = reactive({
       name: "",
-      active: true,
     });
     const rules = {
       name: { required },
@@ -107,14 +105,21 @@ export default {
       supplierCategoryClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.supplier_category,
-            added_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#supplierCategoryFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+
           data.nameExist = error.response.data.errors.name ? true : false;
         });
     }
@@ -123,23 +128,30 @@ export default {
       supplierCategoryClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.supplier_category,
-            added_by: props.selectedSupplierCategory.added_by,
-            updated_by: response.data.user,
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#supplierCategoryFormModal").modal("hide");
         })
         .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+
           data.nameExist = error.response.data.errors.name ? true : false;
         });
     }
     function getForm() {
       return {
-        id: props.selectedSupplierCategory ? props.selectedSupplierCategory.id : null,
+        id: props.selectedSupplierCategory
+          ? props.selectedSupplierCategory.id
+          : null,
         name: form.name,
-        active: form.active,
       };
     }
     function setForm() {
@@ -149,9 +161,6 @@ export default {
       form.name = props.selectedSupplierCategory
         ? props.selectedSupplierCategory.name
         : "";
-      form.active = props.selectedSupplierCategory
-        ? Boolean(props.selectedSupplierCategory.active)
-        : true;
     }
     //Watchers
     watch(
@@ -175,6 +184,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.submit {
+  background: #373063 !important;
+  color: #fff !important;
+}
 .active {
   display: flex;
   justify-content: flex-end;
@@ -224,10 +237,10 @@ export default {
       transition: 0.4s;
     }
     input:checked + .slider {
-      background-color: #6d85fb;
+      background-color: #373063;
     }
     input:focus + .slider {
-      box-shadow: 0 0 1px #6d85fb;
+      box-shadow: 0 0 1px #373063;
     }
     input:checked + .slider:before {
       -webkit-transform: translateX(26px);
@@ -252,7 +265,7 @@ export default {
   }
   input {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
   .modal-footer {
     button {

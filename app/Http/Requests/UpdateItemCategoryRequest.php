@@ -26,7 +26,6 @@ class UpdateItemCategoryRequest extends FormRequest
         return [
             "id" => "required",
             "name" => "required|unique:item_categories,name," . $this->id,
-            "active" => "required|boolean",
         ];
     }
 }

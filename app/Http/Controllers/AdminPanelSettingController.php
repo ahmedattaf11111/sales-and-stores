@@ -11,6 +11,7 @@ class AdminPanelSettingController extends Controller
     public function __construct(AdminPanelSettingService $adminPanelSettingRepository)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|update general_setting")->only("update");
         $this->adminPanelSettingService = $adminPanelSettingRepository;
     }
     public function index()

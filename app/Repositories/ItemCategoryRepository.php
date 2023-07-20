@@ -9,7 +9,7 @@ class ItemCategoryRepository
     public function getItemCategories($pageSize, $text)
     {
         return ItemCategory::where("name", "like", "%$text%")->with(["added_by", "updated_by"])
-            ->paginate($pageSize);
+        ->orderByDesc("id")->paginate($pageSize);
     }
     public function create($input)
     {

@@ -23,7 +23,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="col-12">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("TYPE") }}</label>
                     <select
@@ -43,7 +43,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("ACCOUNT") }}</label>
                     <select
@@ -68,9 +68,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("AMOUNT_DUE") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("AMOUNT_DUE")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -81,7 +83,11 @@
                     />
                     <div class="invalid-feedback">
                       <div v-for="error in v$.amount.$errors" :key="error">
-                        {{ $t("AMOUNT_DUE") + " " + $t(error.$validator, { value: 0 }) }}
+                        {{
+                          $t("AMOUNT_DUE") +
+                          " " +
+                          $t(error.$validator, { value: 0 })
+                        }}
                       </div>
                     </div>
                   </div>
@@ -89,16 +95,21 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("NOTE") }}</label>
-                    <textarea rows="3" class="form-control" v-model="note"> </textarea>
+                    <textarea rows="3" class="form-control" v-model="note">
+                    </textarea>
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -120,6 +131,7 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const treasury_transaction_store = inject("treasury_transaction_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const data = reactive({
       accounts: [],
     });
@@ -153,17 +165,21 @@ export default {
       treasuryTransactionClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.treasury_transaction,
-            added_by: response.data.user,
-            shift: response.data.shift,
-            move_type: response.data.move_type,
-            account: response.data.account,
+          swal({
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
+            confirmButtonText: t("OK"),
           });
+          context.emit("created");
           $("#treasuryTransactionFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function getForm() {
       return {
@@ -201,6 +217,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.submit {
+  background: #373063 !important;
+  color: #fff !important;
+}
 .modal-header {
   border-color: #e9ecef !important;
 }
@@ -279,7 +299,7 @@ export default {
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
   .modal-footer {
     button {

@@ -24,13 +24,17 @@ class AdminService
         $input["added_by_id"] = $user->id;
         $treasuries_ids = $input["treasuries_ids"];
         unset($input["treasuries_ids"]);
-        return ["admin" => $this->userRepository->create($input, $treasuries_ids), "user" => $user];
+        $permissions = $input["permissions"];
+        unset($input["permissions"]);
+        return ["admin" => $this->userRepository->create($input, $treasuries_ids,$permissions), "user" => $user];
     }
     public function update($user, $input)
     {
         $input["updated_by_id"] = $user->id;
         $treasuries_ids = $input["treasuries_ids"];
+        $permissions = $input["permissions"];
+        unset($input["permissions"]);
         unset($input["treasuries_ids"]);
-        return ["admin" => $this->userRepository->update($input, $treasuries_ids), "user" => $user];
+        return ["admin" => $this->userRepository->update($input, $treasuries_ids,$permissions), "user" => $user];
     }
 }

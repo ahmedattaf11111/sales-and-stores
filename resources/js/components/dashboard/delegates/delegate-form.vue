@@ -1,13 +1,13 @@
 <template>
   <div class="delegate-form">
     <div
-      class="modal fade"
+      class="modal fade modal-lg"
       id="delegateFormModal"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog">
         <div class="modal-content">
           <form @submit.prevent="save" enctype="multipart/form-data">
             <div class="modal-header">
@@ -23,13 +23,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="active col-12">
-                  <label class="switch">
-                    <input v-model="active" type="checkbox" :checked="active" />
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("NAME") }}</label>
                     <input
@@ -47,9 +41,34 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("MOBILE_NUMBER") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("START_BALANCE")
+                    }}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="v$.start_balance.$model"
+                      :class="{
+                        'is-invalid': v$.start_balance.$error,
+                      }"
+                    />
+                    <div class="invalid-feedback">
+                      <div
+                        v-for="error in v$.start_balance.$errors"
+                        :key="error"
+                      >
+                        {{ $t("START_BALANCE") + " " + $t(error.$validator) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("MOBILE_NUMBER")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -65,7 +84,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("ADDRESS") }}</label>
                     <input
@@ -83,38 +102,16 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("START_BALANCE") }}</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="v$.start_balance.$model"
-                      :class="{
-                        'is-invalid': v$.start_balance.$error,
-                      }"
-                    />
-                    <div class="invalid-feedback">
-                      <div v-for="error in v$.start_balance.$errors" :key="error">
-                        {{ $t("START_BALANCE") + " " + $t(error.$validator) }}
-                      </div>
-                    </div>
+                    <label>{{ $t("PERCENT") }}</label>
+                    <select v-model="percent_type" class="form-control">
+                      <option :value="true">{{ $t("YES") }}</option>
+                      <option :value="false">{{ $t("NO") }}</option>
+                    </select>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-check">
-                    <input
-                      type="checkbox"
-                      v-model="percent_type"
-                      class="form-check-input"
-                      id="exampleCheck1"
-                    />
-                    <label class="form-check-label" for="exampleCheck1">{{
-                      $t("PERCENT")
-                    }}</label>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-3 mb-2">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{
                       $t("PERCENT_COLLECT_COMMISSION")
@@ -143,7 +140,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-3 mb-2">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{
                       $t("PERCENT_HALFSALES_COMMISSION")
@@ -172,7 +169,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-3 mb-2">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{
                       $t("PERCENT_WHOLESALES_COMMISSION")
@@ -201,7 +198,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-3 mb-2">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{
                       $t("PERCENT_SALES_RETAIL_COMMISSION")
@@ -216,7 +213,8 @@
                     />
                     <div class="invalid-feedback">
                       <div
-                        v-for="error in v$.percent_sales_retail_commission.$errors"
+                        v-for="error in v$.percent_sales_retail_commission
+                          .$errors"
                         :key="error"
                       >
                         {{
@@ -230,19 +228,17 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("NOTE") }}</label>
-                    <textarea rows="3" class="form-control" v-model="note"> </textarea>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -259,16 +255,15 @@ import { minValue, required } from "@vuelidate/validators";
 import delegateClient from "../../../shared/http-clients/delegate-client";
 import { inject, reactive, toRefs, watch } from "vue-demi";
 import { useI18n } from "vue-i18n";
-import phoneValidator from  "../../../shared/validators/phone-validator";
+import phoneValidator from "../../../shared/validators/phone-validator";
 export default {
   setup(props, context) {
     const { t, locale } = useI18n({ useScope: "global" });
     const delegate_store = inject("delegate_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const form = reactive({
       name: "",
-      active: true,
-      note: "",
       start_balance: 0,
       address: "",
       phone: "",
@@ -280,10 +275,9 @@ export default {
     });
     const rules = {
       name: { required },
-      note: "",
       start_balance: { required, minValue: minValue(0) },
       address: { required },
-      phone: { required,phoneValidator },
+      phone: { required, phoneValidator },
       percent_collect_commission: {
         required,
         minValue: minValue(0),
@@ -335,31 +329,40 @@ export default {
       delegateClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.delegate,
-            account: { ...response.data.account, added_by: response.data.user },
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#delegateFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function update() {
       delegateClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.delegate,
-            account: {
-              ...response.data.account,
-              added_by: props.selectedDelegate.account.added_by,
-              updated_by: response.data.user,
-            },
+          swal({
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#delegateFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function getForm() {
       return {
@@ -368,8 +371,6 @@ export default {
         start_balance: form.start_balance,
         phone: form.phone,
         address: form.address,
-        note: form.note,
-        active: form.active,
         percent_type: form.percent_type,
         percent_collect_commission: form.percent_collect_commission,
         percent_sales_retail_commission: form.percent_sales_retail_commission,
@@ -379,12 +380,13 @@ export default {
     }
     function setForm() {
       v$.value.$reset();
-      form.name = props.selectedDelegate ? props.selectedDelegate.account.name : "";
+      form.name = props.selectedDelegate
+        ? props.selectedDelegate.account.name
+        : "";
       form.phone = props.selectedDelegate ? props.selectedDelegate.phone : "";
-      form.address = props.selectedDelegate ? props.selectedDelegate.address : "";
-      form.active = props.selectedDelegate
-        ? Boolean(props.selectedDelegate.account.active)
-        : true;
+      form.address = props.selectedDelegate
+        ? props.selectedDelegate.address
+        : "";
       form.percent_type = props.selectedDelegate
         ? Boolean(props.selectedDelegate.percent_type)
         : true;
@@ -403,7 +405,6 @@ export default {
       form.percent_wholesale_commission = props.selectedDelegate
         ? props.selectedDelegate.percent_wholesale_commission
         : "";
-      form.note = props.selectedDelegate ? props.selectedDelegate.account.note : "";
     }
     //Watchers
     watch(
@@ -427,6 +428,14 @@ export default {
 
 <style scoped lang="scss">
 .delegate-form {
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+  }
+  .form-check-label {
+    position: relative;
+    top: 0px;
+  }
   .modal-header {
     border-color: #e9ecef !important;
   }
@@ -474,10 +483,10 @@ export default {
       transition: 0.4s;
     }
     input:checked + .slider {
-      background-color: #6d85fb;
+      background-color: #373063;
     }
     input:focus + .slider {
-      box-shadow: 0 0 1px #6d85fb;
+      box-shadow: 0 0 1px #373063;
     }
     input:checked + .slider:before {
       -webkit-transform: translateX(26px);
@@ -504,7 +513,7 @@ export default {
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
   .modal-footer {
     button {
@@ -524,6 +533,10 @@ export default {
   .master {
     margin-top: 8px;
     margin-bottom: -4px;
+  }
+  input:checked {
+    background: #373063;
+    border-color: #373063 !important;
   }
 }
 </style>

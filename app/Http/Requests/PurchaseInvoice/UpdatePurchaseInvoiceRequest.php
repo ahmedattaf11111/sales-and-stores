@@ -29,7 +29,6 @@ class UpdatePurchaseInvoiceRequest extends FormRequest
             "invoice_number" => "required|unique:purchase_invoices,invoice_number," . $this->id,
             "supplier_id" => "required|numeric",
             "store_id" => "required|numeric",
-            "note" => "nullable"
         ];
     }
 }

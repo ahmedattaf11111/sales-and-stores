@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TreasuryTransaction extends Model
 {
+    protected $appends = ["ar_created_at", "en_created_at", "ar_updated_at", "en_updated_at"];
     protected $guarded = [];
     use Date;
     public function added_by()
@@ -37,5 +38,4 @@ class TreasuryTransaction extends Model
     {
         return $this->belongsTo(SaleInvoice::class);
     }
-    
 }

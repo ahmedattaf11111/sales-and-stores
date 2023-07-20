@@ -19,9 +19,9 @@ class ItemRepository
             })
             ->when($type, function ($query) use ($type) {
                 $query->where("type", $type);
-        })
-            ->with(["added_by", "updated_by"])
-            ->paginate($pageSize);
+            })
+            ->with(["itemCategory", "mainUnitOfMeasure", "subUnitOfMeasure", "added_by", "updated_by"])
+            ->orderByDesc("id")->paginate($pageSize);
     }
     public function getItemCategories()
     {

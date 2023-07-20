@@ -25,7 +25,6 @@ class CreateInvoiceCategoryRequest extends FormRequest
     {
         return [
             "name" => "required|unique:invoice_categories",
-            "active" => "required|boolean",
         ];
     }
 }

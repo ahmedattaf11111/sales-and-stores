@@ -16,9 +16,9 @@ class TreasuryTransactionService
         $this->treasuryTransactionRepository = $treasuryTransactionRepository;
         $this->transactionCommonService = $transactionCommonService;
     }
-    public function getTreasuryTransactions($pageSize, $type)
+    public function getTreasuryTransactions($pageSize, $type,$text)
     {
-        return $this->treasuryTransactionRepository->getTreasuryTransactions($pageSize, $type);
+        return $this->treasuryTransactionRepository->getTreasuryTransactions($pageSize, $type,$text);
     }
     public function getAccounts()
     {

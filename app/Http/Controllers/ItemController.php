@@ -12,6 +12,13 @@ class ItemController extends Controller
     public function __construct(ItemService $itemService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create item")->only("create");
+        $this->middleware("permission:super admin|update item")->only("update");
+        $this->middleware("permission:super admin|delete item")->only("delete");
+        $this->middleware("permission:super admin|view item")->only([
+            "index", "getItemCategories",
+            "getUnitOfMeasures"
+        ]);
         $this->itemService = $itemService;
     }
     public function index()

@@ -11,9 +11,9 @@ class ShiftService
     {
         $this->shiftRepository = $shiftRepository;
     }
-    public function getShifts($pageSize)
+    public function getShifts($pageSize,$text)
     {
-        return $this->shiftRepository->getShifts($pageSize);
+        return $this->shiftRepository->getShifts($pageSize,$text);
     }
     public function getAdminTreasuries($admin)
     {

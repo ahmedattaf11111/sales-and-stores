@@ -2,6 +2,7 @@
 
 namespace App\Repositories\SaleInvoice;
 
+use App\Commons\Consts\SaleInvoiceType;
 use App\Commons\Consts\SalePriceType;
 use App\Models\Batch;
 use App\Models\Customer;
@@ -18,7 +19,7 @@ class SaleInvoiceRepository
         return
             SaleInvoice::when($text, function ($query) use ($text) {
                 $query->where("id", $text);
-            })->with("customer.account", "invoiceCategory", "added_by", "approved_by")->paginate($pageSize);
+            })->where("type", SaleInvoiceType::SALE)->orderByDesc("id")->with("customer.account", "delegate.account", "invoiceCategory", "added_by", "approved_by")->paginate($pageSize);
     }
     public function getCustomers()
     {

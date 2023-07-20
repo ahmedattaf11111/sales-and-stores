@@ -50,13 +50,13 @@
                   value=""
                   id="flexCheckDefault"
                 />
-                <label class="form-check-label" for="flexCheckDefault">
+                <label style="margin-top: 4px;" class="form-check-label" for="flexCheckDefault">
                   {{ $t("SHOW_PASSWORD") }}
                 </label>
               </div>
             </div>
           </div>
-          <button type="submit" class="submit btn btn-danger">
+          <button type="submit" class="submit btn ">
             {{ $t("LOGIN") }}
           </button>
         </form>
@@ -129,15 +129,18 @@ export default {
   }
   .login-box {
     background: #fff;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+      rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     @media (max-width: 767px) {
       //For small devices
       & {
         box-shadow: none !important;
       }
     }
-    .submit{
-      width:120px;
+    .submit {
+      width: 120px;
+      background: #373063 !important;
+      color: #fff !important;
     }
     .form-control {
       background: none;

@@ -21,11 +21,14 @@ import ItemCategoryTable from '../components/dashboard/item-categories/item-cate
 import AdminTable from '../components/dashboard/admins/admin-table';
 import ShiftTable from '../components/dashboard/shift/shift-table';
 import SaleInvoiceTable from '../components/dashboard/sales-invoices/sales-invoices-table';
+import SaleReturnInvoiceTable from '../components/dashboard/sales-returns-invoices/sales-returns-invoices-table';
 import TreasuryTransactionTable from '../components/dashboard/treasury-transaction/treasury-transaction-table';
 import AdminPanelSettings from '../components/dashboard/admin-panel-settings';
 import AuthenticatedGuard from "../shared/guards/authenticated-guard";
 import GuestGuard from "../shared/guards/guest-guard";
 import PageNotFound from "../shared/components/page-not-found";
+import PermissionGuard from "../shared/guards/permission-guard";
+import SupplierAccountStatement from '../components/dashboard/reports/supplier_account_report';
 const routes = [
   {
     path: "",
@@ -40,25 +43,41 @@ const routes = [
     children: [
       { path: "hellos", component: HelloTable },
       { path: "admin-panel-settings", component: AdminPanelSettings },
-      { path: "treasuries", component: TreasuryTable },
-      { path: "invoice-categories", component: InvoiceCategoryTable },
-      { path: "item-categories", component: ItemCategoryTable },
-      { path: "stores", component: StoreTable },
-      { path: "unit-of-measures", component: UnitOfMeasureTable },
-      { path: "items", component: ItemTable },
-      { path: "accounts", component: AccountTable },
-      { path: "customers", component: CustomerTable },
-      { path: "delegates", component: DelegateTable },
-      { path: "supplier-categories", component: SupplierCategoryTable },
-      { path: "suppliers", component: SupplierTable },
-      { path: "purchase-invoices", component: PurchaseInvoiceTable },
-      { path: "purchase-return-invoices", component: PurchaseReturnInvoiceTable },
-      { path: "purchase-invoice-items/:purchaseInvoiceId", component: PurchaseInvoiceItemTable },
-      { path: "purchase-return-invoice-items/:purchaseInvoiceId", component: PurchaseReturnInvoiceItemTable },
-      { path: "admins", component: AdminTable },
-      { path: "shifts", component: ShiftTable },
-      { path: "treasury-transactions", component: TreasuryTransactionTable },
-      { path: "sales-invoices", component: SaleInvoiceTable },
+      { path: "treasuries", component: TreasuryTable, name: "view treasury", beforeEnter: [PermissionGuard] },
+      { path: "invoice-categories", component: InvoiceCategoryTable, name: "view invoice_category", beforeEnter: [PermissionGuard] },
+      { path: "item-categories", component: ItemCategoryTable, name: "view item_category", beforeEnter: [PermissionGuard] },
+      { path: "stores", component: StoreTable, name: "view store", beforeEnter: [PermissionGuard] },
+      { path: "unit-of-measures", component: UnitOfMeasureTable, name: "view unit_of_measure", beforeEnter: [PermissionGuard] },
+      { path: "items", component: ItemTable, name: "view item", beforeEnter: [PermissionGuard] },
+      { path: "accounts", component: AccountTable, name: "view all_account", beforeEnter: [PermissionGuard] },
+      { path: "customers", component: CustomerTable, name: "view customer_account", beforeEnter: [PermissionGuard] },
+      { path: "delegates", component: DelegateTable, name: "view delegate_account", beforeEnter: [PermissionGuard] },
+      { path: "supplier-categories", component: SupplierCategoryTable, name: "view supplier_category", beforeEnter: [PermissionGuard] },
+      { path: "suppliers", component: SupplierTable, name: "view supplier_account", beforeEnter: [PermissionGuard] },
+      { path: "admins", component: AdminTable, name: "view admin", beforeEnter: [PermissionGuard] },
+      { path: "shifts", component: ShiftTable, name: "view shift", beforeEnter: [PermissionGuard] },
+      { path: "treasury-transactions", component: TreasuryTransactionTable, name: "view collect_exchange_money", beforeEnter: [PermissionGuard] },
+      { path: "sales-invoices", component: SaleInvoiceTable, name: "view sale_invoice", beforeEnter: [PermissionGuard] },
+      { path: "sales-returns-invoices", component: SaleReturnInvoiceTable, name: "view sale_return_invoice", beforeEnter: [PermissionGuard] },
+      { path: "supplier_account_statement",name:"view supplier_account_statement", component: SupplierAccountStatement},
+      {
+        path: "",
+        beforeEnter: [PermissionGuard],
+        children:
+          [
+            { path: "purchase-invoice-items/:purchaseInvoiceId", component: PurchaseInvoiceItemTable, name: "x_view purchase_invoice" },
+            { path: "purchase-invoices", component: PurchaseInvoiceTable, name: "view purchase_invoice" },
+          ]
+      },
+      {
+        path: "",
+        beforeEnter: [PermissionGuard],
+        children:
+          [
+            { path: "purchase-return-invoice-items/:purchaseInvoiceId", component: PurchaseReturnInvoiceItemTable, name: "x_view purchase_return_invoice" },
+            { path: "purchase-return-invoices", component: PurchaseReturnInvoiceTable, name: "view purchase_return_invoice", },
+          ]
+      }
     ]
   },
   {
@@ -76,6 +95,7 @@ const routes = [
     component: PageNotFound
   }
 ];
+
 const router = createRouter({
   history: createWebHistory(),
   routes,

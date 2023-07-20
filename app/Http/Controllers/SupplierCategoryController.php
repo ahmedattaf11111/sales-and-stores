@@ -12,6 +12,10 @@ class SupplierCategoryController extends Controller
     public function __construct(InvoiceCategoryService $invoiceCategoryService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create supplier_category")->only("create");
+        $this->middleware("permission:super admin|update supplier_category")->only("update");
+        $this->middleware("permission:super admin|delete supplier_category")->only("delete");
+        $this->middleware("permission:super admin|view supplier_category")->only("index");
         $this->invoiceCategoryService = $invoiceCategoryService;
     }
     public function index()

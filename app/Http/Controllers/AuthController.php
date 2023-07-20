@@ -13,6 +13,14 @@ class AuthController extends Controller
         //To verify the token in fornt end
         return ["valid" => true];
     }
+    public function hasPermission($screenName)
+    {
+        return response()->json(["has_permission" => request()->user()->hasAnyPermission(["super admin", $screenName])]);
+    }
+    public function getCurrentPermissions()
+    {
+        return request()->user()->permissions;
+    }
     public function login()
     {
         $credentials = request(['email', 'password']);

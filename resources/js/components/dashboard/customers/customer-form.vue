@@ -23,13 +23,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="active col-12">
-                  <label class="switch">
-                    <input v-model="active" type="checkbox" :checked="active" />
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("NAME") }}</label>
                     <input
@@ -47,9 +41,34 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("MOBILE_NUMBER") }}</label>
+                    <label for="exampleInputEmail1">{{
+                      $t("START_BALANCE")
+                    }}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="v$.start_balance.$model"
+                      :class="{
+                        'is-invalid': v$.start_balance.$error,
+                      }"
+                    />
+                    <div class="invalid-feedback">
+                      <div
+                        v-for="error in v$.start_balance.$errors"
+                        :key="error"
+                      >
+                        {{ $t("START_BALANCE") + " " + $t(error.$validator) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">{{
+                      $t("MOBILE_NUMBER")
+                    }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -65,7 +84,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label for="exampleInputEmail1">{{ $t("ADDRESS") }}</label>
                     <input
@@ -83,37 +102,17 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("START_BALANCE") }}</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="v$.start_balance.$model"
-                      :class="{
-                        'is-invalid': v$.start_balance.$error,
-                      }"
-                    />
-                    <div class="invalid-feedback">
-                      <div v-for="error in v$.start_balance.$errors" :key="error">
-                        {{ $t("START_BALANCE") + " " + $t(error.$validator) }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">{{ $t("NOTE") }}</label>
-                    <textarea rows="3" class="form-control" v-model="note"> </textarea>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-danger">
+              <button type="submit" class="btn submit">
                 {{ $t("SUBMIT") }}
               </button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
                 {{ $t("CLOSE") }}
               </button>
             </div>
@@ -136,10 +135,9 @@ export default {
     const { t, locale } = useI18n({ useScope: "global" });
     const customer_store = inject("customer_store");
     const toast = inject("toast");
+    const swal = inject("swal");
     const form = reactive({
       name: "",
-      active: true,
-      note: "",
       start_balance: 0,
       address: "",
       phone: "",
@@ -168,31 +166,41 @@ export default {
       customerClient
         .create(getForm())
         .then((response) => {
-          toast.success(t("CREATED_SUCCESSFULLY"));
-          context.emit("created", {
-            ...response.data.customer,
-            account: { ...response.data.account, added_by: response.data.user },
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("CREATED_SUCCESSFULLY"),
           });
+          context.emit("created");
           $("#customerFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function update() {
       customerClient
         .update(getForm())
         .then((response) => {
-          toast.success(t("UPDATED_SUCCESSFULLY"));
-          context.emit("updated", {
-            ...response.data.customer,
-            account: {
-              ...response.data.account,
-              added_by: props.selectedCustomer.account.added_by,
-              updated_by: response.data.user,
-            },
+          swal({
+            confirmButtonText: t("OK"),
+            icon: "success",
+            title: t("SUCCESS"),
+            text: t("UPDATED_SUCCESSFULLY"),
           });
+          context.emit("updated");
           $("#customerFormModal").modal("hide");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if (error.response.status == 403) {
+            toast.error(t("DONT_HAVE_THIS_PERMISSION"));
+            return;
+          }
+        });
     }
     function getForm() {
       return {
@@ -201,22 +209,20 @@ export default {
         start_balance: form.start_balance,
         phone: form.phone,
         address: form.address,
-        note: form.note,
-        active: form.active,
       };
     }
     function setForm() {
       v$.value.$reset();
-      form.name = props.selectedCustomer ? props.selectedCustomer.account.name : "";
+      form.name = props.selectedCustomer
+        ? props.selectedCustomer.account.name
+        : "";
       form.phone = props.selectedCustomer ? props.selectedCustomer.phone : "";
-      form.address = props.selectedCustomer ? props.selectedCustomer.address : "";
-      form.active = props.selectedCustomer
-        ? Boolean(props.selectedCustomer.account.active)
-        : true;
+      form.address = props.selectedCustomer
+        ? props.selectedCustomer.address
+        : "";
       form.start_balance = props.selectedCustomer
         ? props.selectedCustomer.account.start_balance
         : 0;
-      form.note = props.selectedCustomer ? props.selectedCustomer.account.note : "";
     }
     //Watchers
     watch(
@@ -241,30 +247,40 @@ export default {
 
 <style scoped lang="scss">
 .customer-form {
+  .submit {
+    background: #373063 !important;
+    color: #fff !important;
+  }
   .modal-header {
     border-color: #e9ecef !important;
   }
+
   .modal-footer {
     border: none !important;
   }
+
   .active {
     display: flex;
     justify-content: flex-end;
   }
+
   .form-check-label {
     position: relative;
     bottom: 4px;
   }
+
   .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
+
     input {
       opacity: 0;
       width: 0;
       height: 0;
     }
+
     .slider {
       position: absolute;
       cursor: pointer;
@@ -276,6 +292,7 @@ export default {
       -webkit-transition: 0.4s;
       transition: 0.4s;
     }
+
     .slider:before {
       position: absolute;
       content: "";
@@ -287,17 +304,21 @@ export default {
       -webkit-transition: 0.4s;
       transition: 0.4s;
     }
+
     input:checked + .slider {
-      background-color: #6d85fb;
+      background-color: #373063;
     }
+
     input:focus + .slider {
-      box-shadow: 0 0 1px #6d85fb;
+      box-shadow: 0 0 1px #373063;
     }
+
     input:checked + .slider:before {
       -webkit-transform: translateX(26px);
       -ms-transform: translateX(26px);
       transform: translateX(26px);
     }
+
     /* Rounded sliders */
     .slider.round {
       border-radius: 34px;
@@ -307,24 +328,29 @@ export default {
       border-radius: 50%;
     }
   }
+
   .form-group {
     margin-bottom: 10px;
+
     .form-control {
       background-color: transparent;
       padding: 10px;
     }
   }
+
   input,
   select,
   textarea {
     border-color: #e7e7e7;
-    border-radius: 0 !important;
+    border-radius: 5px !important;
   }
+
   .modal-footer {
     button {
       width: 80px;
     }
   }
+
   .increments {
     width: 38px;
     height: 37px;
@@ -332,9 +358,11 @@ export default {
     background-color: #f8f9fa;
     border-radius: 5px;
   }
+
   hr {
     color: gray;
   }
+
   .master {
     margin-top: 8px;
     margin-bottom: -4px;

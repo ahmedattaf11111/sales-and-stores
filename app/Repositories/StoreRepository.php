@@ -9,7 +9,7 @@ class StoreRepository
     public function getStores($pageSize, $text)
     {
         return Store::where("name", "like", "%$text%")->with(["added_by", "updated_by"])
-            ->paginate($pageSize);
+            ->orderByDesc("id")->paginate($pageSize);
     }
     public function create($input)
     {

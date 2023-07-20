@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminPannelSettingSeeder::class);
         $this->call(AccountTypeSeeder::class);
         $this->call(MoveTypeSeeder::class);
+        $this->call(PermissionSeeder::class);
     }
 }

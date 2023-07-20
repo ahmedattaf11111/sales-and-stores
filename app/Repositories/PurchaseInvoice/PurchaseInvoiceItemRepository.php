@@ -15,7 +15,8 @@ class PurchaseInvoiceItemRepository
                 $query->whereRelation("item", "name", "like", "%$text%");
             })
             ->where("purchase_invoice_id", $purchaseInvoiceId)
-            ->with(["updated_by", "added_by", "item"])
+            ->with(["updated_by", "added_by", "item","unitOfMeasure"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function getItems()
@@ -38,10 +39,9 @@ class PurchaseInvoiceItemRepository
         $invoicePurchase->total_purchase_price += $itemTotalPrice;
         $invoicePurchase->save();
     }
-    public function delete($purchaseInvoiceId, $itemId)
+    public function delete($id)
     {
-        PurchaseInvoiceItem::where("purchase_invoice_id", $purchaseInvoiceId)
-            ->where("item_id", $itemId)->delete();
+        PurchaseInvoiceItem::destroy($id);
     }
     public function isPurchaseInvoiceApproved($id)
     {

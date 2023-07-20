@@ -27,7 +27,6 @@ class CreateStoreRequest extends FormRequest
             "name" => "required|unique:stores",
             "phone" => 'required|regex:/^01[0125][0-9]{8}$/',
             "address" => 'required',
-            "active" => "required|boolean",
         ];
     }
 }

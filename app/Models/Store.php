@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Store extends Model
 {
     use Date;
+    protected $appends = ["ar_created_at", "en_created_at","ar_updated_at","en_updated_at"];
     protected $guarded = [];
     public function updated_by()
     {

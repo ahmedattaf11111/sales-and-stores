@@ -7,16 +7,24 @@ use Illuminate\Support\Facades\Hash;
 
 trait Date
 {
-    public function getUpdatedAtAttribute()
+    public function getArCreatedAtAttribute()
     {
-        return Carbon::parse($this->attributes["updated_at"])
-            ->setTimezone('Africa/Cairo')
-            ->format("Y/m/d h:i A");
+        Carbon::setLocale('ar');
+        return (new Carbon($this->attributes["created_at"]))->diffForHumans();
     }
-    public function getCreatedAtAttribute()
+    public function getEnCreatedAtAttribute()
     {
-        return Carbon::parse($this->attributes["created_at"])
-            ->setTimezone('Africa/Cairo')
-            ->format("Y/m/d h:i A");
+        Carbon::setLocale('en');
+        return (new Carbon($this->attributes["created_at"]))->diffForHumans();
+    }
+    public function getArUpdatedAtAttribute()
+    {
+        Carbon::setLocale('ar');
+        return (new Carbon($this->attributes["updated_at"]))->diffForHumans();
+    }
+    public function getEnUpdatedAtAttribute()
+    {
+        Carbon::setLocale('en');
+        return (new Carbon($this->attributes["updated_at"]))->diffForHumans();
     }
 }

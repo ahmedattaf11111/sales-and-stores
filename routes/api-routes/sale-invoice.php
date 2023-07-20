@@ -33,3 +33,24 @@ Route::prefix("sales-invoice-items")->group(function () {
     Route::post("", "SaleInvoiceItemController@create");
     Route::get("batches/{storeId}/{itemId}", "SaleInvoiceItemController@getBatches");
 });
+
+Route::prefix("sales-returns-invoices")->group(function () {
+    Route::get("", "SaleReturnInvoiceController@index");
+    Route::post("", "SaleReturnInvoiceController@createSaleInvoice");
+    Route::get("customers", "SaleReturnInvoiceController@getCustomers");
+    Route::get("delegates", "SaleReturnInvoiceController@getDelegates");
+    Route::get("items", "SaleReturnInvoiceController@getItems");
+    Route::get("stores", "SaleReturnInvoiceController@getStores");
+    Route::get("invoice-categories", "SaleReturnInvoiceController@getInvoiceCategories");
+    Route::put("", "SaleReturnInvoiceController@update");
+    Route::put("tax", "SaleReturnInvoiceController@updateTax");
+    Route::put("discount", "SaleReturnInvoiceController@updateDiscount");
+    Route::delete("{id}", "SaleReturnInvoiceController@delete");
+});
+
+Route::prefix("sales-returns-invoice-items")->group(function () {
+    Route::get("{saleInvoiceId}", "SaleReturnInvoiceItemController@getInvoiceItems");
+    Route::post("delete", "SaleReturnInvoiceItemController@deleteItem");
+    Route::post("", "SaleReturnInvoiceItemController@create");
+    Route::get("batches/{storeId}/{itemId}", "SaleReturnInvoiceItemController@getBatches");
+});

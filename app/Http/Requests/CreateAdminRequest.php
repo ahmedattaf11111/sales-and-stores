@@ -26,10 +26,11 @@ class CreateAdminRequest extends FormRequest
         return [
             "name" => "required",
             "email" => "required|unique:admins",
-            "active" => "required|boolean",
             "password" => "required",
             "treasuries_ids" => "array",
             "treasuries_ids.*" => "required|numeric",
+            "permissions" => "array",
+            "permissions.*" => "required",
         ];
     }
 }

@@ -12,6 +12,10 @@ class InvoiceCategoryController extends Controller
     public function __construct(InvoiceCategoryService $invoiceCategoryService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create invoice_category")->only("create");
+        $this->middleware("permission:super admin|update invoice_category")->only("update");
+        $this->middleware("permission:super admin|delete invoice_category")->only("delete");
+        $this->middleware("permission:super admin|view invoice_category")->only("index");
         $this->invoiceCategoryService = $invoiceCategoryService;
     }
     public function index()

@@ -4,12 +4,17 @@ namespace App\Repositories;
 
 use App\Models\Admin;
 use App\Models\Shift;
+use App\Models\Treasury;
 
 class ShiftRepository
 {
-    public function getShifts($pageSize)
+    public function getShifts($pageSize, $text)
     {
-        return Shift::with(["admin", "treasury"])->paginate($pageSize);
+        return Shift::with(["admin", "treasury"])
+            ->when($text, function ($q) use ($text) {
+                $q->where("id", $text);
+            })
+            ->orderByDesc("id")->paginate($pageSize);
     }
     public function getAdminTreasuries($adminId)
     {
@@ -19,7 +24,10 @@ class ShiftRepository
             }]);
         }])->find($adminId);
         //Replace shifts array with open_shift object
-        return $admin->treasuries->map(function ($treasury) {
+        $treasuries = $admin->email == "superadmin@admin.com" ? Treasury::with(["shifts" => function ($query) {
+            $query->with("admin")->where("is_finished", 0);
+        }])->get() : $admin->treasuries;
+        return $treasuries->map(function ($treasury) {
             $treasury->open_shift = $treasury->shifts->count() ? $treasury->shifts[0] : null;
             unset($treasury->shifts);
             return $treasury;

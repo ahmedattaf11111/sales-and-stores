@@ -9,24 +9,23 @@ class TreasuryRepository
     public function getTreasuries($pageSize, $text)
     {
         return Treasury::where("name", "like", "%$text%")
-            ->with(["added_by", "updated_by", "subTreasuries"])
+            ->with(["added_by", "updated_by"])
+            ->orderByDesc("id")
             ->paginate($pageSize);
     }
     public function getAllTreasuries()
     {
-        return Treasury::where("is_master", 0)->get();
+        return Treasury::get();
     }
-    public function create($input, $treasuries_ids)
+    public function create($input)
     {
         $treasury = Treasury::create($input);
-        $treasury->subTreasuries()->sync($treasuries_ids);
         return $treasury;
     }
-    public function update($input, $treasuries_ids)
+    public function update($input)
     {
         $treasury = Treasury::find($input["id"]);
         $treasury->update($input);
-        $treasury->subTreasuries()->sync($treasuries_ids);
         return $treasury;
     }
 }

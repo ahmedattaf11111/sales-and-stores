@@ -12,6 +12,10 @@ class StoreController extends Controller
     public function __construct(StoreService $storeService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create store")->only("create");
+        $this->middleware("permission:super admin|update store")->only("update");
+        $this->middleware("permission:super admin|delete store")->only("delete");
+        $this->middleware("permission:super admin|view store")->only("index");
         $this->storeService = $storeService;
     }
     public function index()

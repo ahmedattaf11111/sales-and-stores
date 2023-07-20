@@ -27,12 +27,11 @@ class SaleInvoiceItemService
     }
     public function deleteItem($input)
     {
-        $input["total_sale_price"] = $input["sale_price"] * $input["quantity"];
-        $this->saleInvoiceItemRepository->incrementTotalSale(
+        $this->saleInvoiceItemRepository->decrementTotalSale(
             $input["sale_invoice_id"],
             $input["total_sale_price"]
         );
-        $this->saleInvoiceItemRepository->deleteItem($input);
+        $this->saleInvoiceItemRepository->deleteItem($input["id"]);
         $this->saleInvoiceItemRepository->incrementBatchQuantity($input);
     }
     public function getInvoiceItems($saleInvoiceId)

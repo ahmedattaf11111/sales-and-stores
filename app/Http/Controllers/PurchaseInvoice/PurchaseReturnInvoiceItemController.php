@@ -18,6 +18,13 @@ class PurchaseReturnInvoiceItemController extends Controller
     public function __construct(PurchaseInvoiceItemService $purchaseInvoiceItemService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create purchase_return_invoice")->only("create");
+        $this->middleware("permission:super admin|update purchase_return_invoice")->only("update");
+        $this->middleware("permission:super admin|delete purchase_return_invoice")->only("delete");
+        $this->middleware("permission:super admin|view purchase_return_invoice")->only([
+            "index",
+            "getBatches", "getItems", "isPurchaseInvoiceApproved"
+        ]);
         $this->purchaseInvoiceItemService = $purchaseInvoiceItemService;
     }
 

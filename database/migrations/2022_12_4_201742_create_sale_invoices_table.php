@@ -33,6 +33,7 @@ class CreateSaleInvoicesTable extends Migration
             $table->decimal("is_delegate_commission_percent")->default(1);
             $table->decimal("delegate_commission")->default(0);
             $table->string("sale_price_type")->nullable();
+            $table->string("type")->nullable();
             $table->timestamps();
         });
     }

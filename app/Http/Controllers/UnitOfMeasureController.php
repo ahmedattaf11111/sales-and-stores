@@ -12,6 +12,10 @@ class UnitOfMeasureController extends Controller
     public function __construct(UnitOfMeasureService $unitOfMeasureService)
     {
         $this->middleware("auth:admin");
+        $this->middleware("permission:super admin|create unit_of_measure")->only("create");
+        $this->middleware("permission:super admin|update unit_of_measure")->only("update");
+        $this->middleware("permission:super admin|delete unit_of_measure")->only("delete");
+        $this->middleware("permission:super admin|view unit_of_measure")->only("index");
         $this->unitOfMeasureService = $unitOfMeasureService;
     }
     public function index()
