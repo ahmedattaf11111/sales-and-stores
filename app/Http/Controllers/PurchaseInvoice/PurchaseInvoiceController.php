@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\PurchaseInvoice;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ApprovePurchaseInvoiceRequest;
+use App\Http\Requests\PurchaseInvoice\ApprovePurchaseInvoiceRequest;
 use App\Http\Requests\PurchaseInvoice\CreatePurchaseInvoiceRequest;
 use App\Http\Requests\PurchaseInvoice\UpdatePurchaseInvoiceRequest;
 use App\Services\PurchaseInvoice\PurchaseInvoiceService;

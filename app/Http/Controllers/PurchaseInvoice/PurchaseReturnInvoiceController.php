@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\PurchaseInvoice;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ApprovePurchaseInvoiceRequest;
-use App\Http\Requests\CreatePurchaseReturnInvoiceRequest;
-use App\Http\Requests\UpdatePurchaseReturnInvoiceRequest;
+
+use App\Http\Requests\PurchaseInvoice\ApprovePurchaseInvoiceRequest;
+use App\Http\Requests\PurchaseInvoice\CreatePurchaseReturnInvoiceRequest;
+use App\Http\Requests\PurchaseInvoice\UpdatePurchaseReturnInvoiceRequest;
 use App\Models\Batch;
 use App\Models\Item;
 use App\Models\PurchaseInvoiceItem;

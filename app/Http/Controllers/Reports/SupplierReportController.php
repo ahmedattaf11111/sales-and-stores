@@ -2,51 +2,56 @@
 
 namespace App\Http\Controllers\Reports;
 
-use App\Commons\Consts\PurchaseInvoiceType;
-use App\Commons\Consts\TreasuryTransactionType;
 use App\Http\Controllers\Controller;
-use App\Models\PurchaseInvoice;
-use App\Models\Supplier;
-use App\Models\TreasuryTransaction;
+use App\Repositories\Reports\SupplierReportRepository;
 
 class SupplierReportController extends Controller
 {
-    public function __construct()
+    private $supplierReportRepository;
+    public function __construct(SupplierReportRepository $supplierReportRepository)
     {
         $this->middleware("auth:admin");
+        $this->supplierReportRepository = $supplierReportRepository;
     }
 
     public function getSuppliers()
     {
-        return Supplier::with("account")->get();
+        return $this->supplierReportRepository->getSuppliers();
     }
     public function getTotalAccountStatementReport()
     {
-        $supplier = Supplier::find(request()->supplier_id);
-        $purchaseInvoiceCount = TreasuryTransaction::whereNotNull("purchase_invoice_id")
-            ->whereRelation("purchaseInvoice", "supplier_id", $supplier->id)->whereRelation("purchaseInvoice", "type", PurchaseInvoiceType::PURCHASE)
-            ->whereBetween("created_at", [request()->from_date, request()->to_date])->count();
-        $purchaseInvoiceAmount = TreasuryTransaction::whereNotNull("purchase_invoice_id")
-            ->whereRelation("purchaseInvoice", "supplier_id", $supplier->id)->whereRelation(
-                "purchaseInvoice",
-                "type",
-                PurchaseInvoiceType::PURCHASE
-            )->whereBetween("created_at", [request()->from_date, request()->to_date])->sum("account_amount");
-        $purchaseReturnInvoiceCount = TreasuryTransaction::whereNotNull("purchase_invoice_id")
-            ->whereRelation("purchaseInvoice", "supplier_id", $supplier->id)->whereRelation("purchaseInvoice", "type", PurchaseInvoiceType::RETURN_ON_GENERAL)->whereBetween("created_at", [request()->from_date, request()->to_date])->count();
-        $purchaseReturnInvoiceAmount = TreasuryTransaction::whereNotNull("purchase_invoice_id")
-            ->whereRelation("purchaseInvoice", "supplier_id", $supplier->id)->whereRelation(
-                "purchaseInvoice",
-                "type",
-                PurchaseInvoiceType::RETURN_ON_GENERAL
-            )->whereBetween("created_at", [request()->from_date, request()->to_date])->sum("account_amount");
+        $supplier = $this->supplierReportRepository->getSupplier(request()->supplier_id);
+        $purchaseInvoiceCount = $this->supplierReportRepository->getPurchaseInvoiceCount(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date
+        );
+        $purchaseInvoiceAmount = $this->supplierReportRepository->getPurchaseInvoiceAmount(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date
+        );
+        $purchaseReturnInvoiceCount = $this->supplierReportRepository->getPurchaseReturnInvoiceCount(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date
+        );
+        $purchaseReturnInvoiceAmount = $this->supplierReportRepository->getPurchaseReturnInvoiceAmount(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date
+        );
         $start_balance = $supplier->account->start_balance;
-        $exchangeAmount = TreasuryTransaction::whereNull("purchase_invoice_id")->whereNull("sale_invoice_id")
-            ->where("type", TreasuryTransactionType::EXCHANGE)
-            ->whereBetween("created_at", [request()->from_date, request()->to_date])->sum("account_amount");
-        $collectAmount = TreasuryTransaction::whereNull("purchase_invoice_id")->whereNull("sale_invoice_id")
-            ->where("type", TreasuryTransactionType::COLLECT)
-            ->whereBetween("created_at", [request()->from_date, request()->to_date])->sum("account_amount");
+        $exchangeAmount = $this->supplierReportRepository->getExchangeAmount(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date
+        );
+        $collectAmount = $this->supplierReportRepository->getCollectAmount(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date
+        );
         return response()->json([[
             "supplier_id" => $supplier->id,
             "start_balance" => $start_balance,
@@ -61,19 +66,32 @@ class SupplierReportController extends Controller
     }
     public function getPurchaseInvoiceReport()
     {
-        return TreasuryTransaction::whereNotNull("purchase_invoice_id")
-            ->whereRelation("purchaseInvoice", "supplier_id", request()->supplier_id)->whereRelation("purchaseInvoice", "type", PurchaseInvoiceType::PURCHASE)
-            ->whereBetween("created_at", [request()->from_date, request()->to_date])->with("purchaseInvoice")->paginate(request()->page_size);
+        $supplier = $this->supplierReportRepository->getSupplier(request()->supplier_id);
+        return $this->supplierReportRepository->getPurchaseInvoiceReport(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date,
+            request()->page_size
+        );
     }
     public function getPurchaseReturnInvoiceReport()
     {
-        return TreasuryTransaction::whereNotNull("purchase_invoice_id")
-            ->whereRelation("purchaseInvoice", "supplier_id", request()->supplier_id)->whereRelation("purchaseInvoice", "type", PurchaseInvoiceType::RETURN_ON_GENERAL)
-            ->whereBetween("created_at", [request()->from_date, request()->to_date])->with("purchaseInvoice")->paginate(request()->page_size);
+        $supplier = $this->supplierReportRepository->getSupplier(request()->supplier_id);
+        return $this->supplierReportRepository->getPurchaseReturnInvoiceReport(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date,
+            request()->page_size
+        );
     }
     public function getCollectExchangeReport()
     {
-        return TreasuryTransaction::whereNull("purchase_invoice_id")->whereNull("sale_invoice_id")->with("moveType")
-            ->whereBetween("created_at", [request()->from_date, request()->to_date])->paginate(request()->page_size);
+        $supplier = $this->supplierReportRepository->getSupplier(request()->supplier_id);
+        return $this->supplierReportRepository->getCollectExchangeReport(
+            $supplier->account->id,
+            request()->from_date,
+            request()->to_date,
+            request()->page_size
+        );
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\PurchaseInvoice;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateReturnPurchaseInvoiceItemRequest;
+use App\Http\Requests\PurchaseInvoice\CreateReturnPurchaseInvoiceItemRequest;
 use App\Http\Requests\PurchaseInvoice\UpdatePurchaseInvoiceItemRequest;
 use App\Models\Batch;
 use App\Models\Item;

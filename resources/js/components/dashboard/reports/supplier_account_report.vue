@@ -490,7 +490,7 @@
     </template>
     <div v-if="!moveItems.length&&reportShown && report_type == 4" class="no-data-found text-center">
       <div>
-        {{ $t(" NO_DATE_FOUND") }}
+        {{ $t("NO_DATE_FOUND") }}
       </div>
     </div>
     <template v-else>

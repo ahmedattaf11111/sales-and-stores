@@ -4,7 +4,7 @@ namespace App\Http\Controllers\SaleInvoice;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DiscountRequest;
-use App\Http\Requests\EditSaleInvoiceRequest;
+use App\Http\Requests\SaleInvoice\EditSaleInvoiceRequest;
 use App\Http\Requests\SaleInvoice\SaleInvoiceRequest;
 use App\Http\Requests\TaxRequest;
 use App\Services\SaleInvoice\SaleInvoiceService;

@@ -8,6 +8,7 @@
     <title>Karsco</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png" />
+    
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&family=Marhey:wght@600;700&display=swap" rel="stylesheet">
